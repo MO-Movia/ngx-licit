@@ -4,6 +4,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "ng": "ng",
+    "start": "ng serve demo",
+    "start:proxy": "ng serve demo -c proxydocker",
+    "start:docker": "ng serve demo -c devcontainer",
     "build": "ng build",
     "test": "ng test",
     "test:unit": "ng test --watch=false -c jenkins --code-coverage",
@@ -32,6 +35,7 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^19.0.1",
+    "@angular-devkit/build-angular": "^19.2.19",
     "@angular-eslint/builder": "^19.8.1",
     "@angular-eslint/eslint-plugin": "^19.8.1",
     "@angular-eslint/eslint-plugin-template": "^19.8.1",
