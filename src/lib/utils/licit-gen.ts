@@ -4,8 +4,8 @@
  */
 
 import type { LicitNode, LicitDocument } from '../models/licit-document';
-import type { EditorState } from 'prosemirror-state';
-import type { Schema } from 'prosemirror-model';
+import type { EditorState } from '@tiptap/pm/state';
+import type { Schema } from '@tiptap/pm/model';
 const PM_DOC = 'doc';
 
 /**

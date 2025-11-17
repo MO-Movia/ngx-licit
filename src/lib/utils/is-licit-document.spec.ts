@@ -3,7 +3,7 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { Node } from 'prosemirror-model';
+import { Node } from '@tiptap/pm/model';
 import type { LicitNode } from '../models/licit-document';
 import { isDirty, isLicitDocument } from './is-licit-document';
 

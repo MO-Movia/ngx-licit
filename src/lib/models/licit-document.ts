@@ -3,8 +3,6 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import type { Licit, EditorRuntime } from '@modusoperandi/licit';
-
 /**
  * Licit document root node.
  *
@@ -104,27 +102,4 @@ export interface LicitAttrs {
    * Additional node specific properties.
    */
   [x: string | number]: unknown;
-}
-/**
- * Contains properties passed down to licit component.
- */
-
-export interface LicitProperties {
-  data?: LicitDocument;
-  debug?: boolean;
-  disabled?: boolean;
-  /**
-   * number: licit v0.1.5 and earlier
-   *
-   * string: licit v0.1.6 and later
-   */
-  docID?: number | string;
-  embedded?: boolean;
-  height?: number | string;
-  onChange?: (doc: LicitDocument, isEmpty: boolean) => void;
-  onReady?: (licit: Licit) => void;
-  plugins?: unknown[];
-  readOnly?: boolean;
-  runtime?: EditorRuntime;
-  width?: number | string;
 }

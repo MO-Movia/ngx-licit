@@ -4,17 +4,12 @@
  */
 
 import { debounceTime, firstValueFrom, map, Subject, timeout } from 'rxjs';
-import type {
-  LicitNode,
-  LicitDocument,
-  LicitProperties,
-} from '../models/licit-document';
+import type { LicitNode, LicitDocument } from '../models/licit-document';
 import { blankNode, textNode } from './licit-gen';
 import ReactDOM from 'react-dom/client';
-import type { ComponentClass } from 'react';
-import React from 'react';
-import { Licit } from '@modusoperandi/licit';
-import type { Plugin } from 'prosemirror-state';
+import { Licit, LicitProps } from '@modusoperandi/licit-tiptap/licit';
+import type { Plugin } from '@tiptap/pm/state';
+import React, { ComponentClass } from 'react';
 
 /**
  * Repairs simple errors in a licit document.
@@ -86,7 +81,7 @@ export async function normalizeDoc(
   document.body.appendChild(div);
   const subject = new Subject<LicitDocument>();
   const catchErr = (err: unknown) => subject.error(err);
-  const props: LicitProperties = {
+  const props: LicitProps = {
     data: repairDoc(doc),
     plugins,
     readOnly: true,
@@ -94,9 +89,9 @@ export async function normalizeDoc(
     embedded: false,
     height: '100vh',
     width: '100vw',
-    onChange: (doc) => subject.next(doc),
+    onChange: (doc) => subject.next(doc as LicitDocument),
     onReady: (licit) =>
-      subject.next(licit.editorView.state.doc as unknown as LicitDocument),
+      subject.next(licit.state.doc as unknown as LicitDocument),
   };
   const root = ReactDOM.createRoot(div, {
     onCaughtError: catchErr,
@@ -105,10 +100,7 @@ export async function normalizeDoc(
   });
   try {
     root.render(
-      React.createElement(
-        Licit as unknown as ComponentClass<LicitProperties>,
-        props
-      )
+      React.createElement(Licit as unknown as ComponentClass<LicitProps>, props)
     );
     // May trigger cascade of updates, wait for document to be "stable". Timeout as failsafe for when react doesn't respond.
     return await firstValueFrom(

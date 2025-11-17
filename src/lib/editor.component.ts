@@ -3,8 +3,9 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import type { ElementRef, OnDestroy } from '@angular/core';
 import {
+  ElementRef,
+  OnDestroy,
   Component,
   HostListener,
   ChangeDetectionStrategy,
@@ -12,21 +13,26 @@ import {
   input,
   output,
   effect,
+  inject,
 } from '@angular/core';
 
 // React stuff
-import type { ComponentClass } from 'react';
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 // Licit stuff
-import type { EditorRuntime } from '@modusoperandi/licit';
-import { Licit } from '@modusoperandi/licit';
-import type { RuntimeService } from './runtime.service';
-import type { LicitDocument, LicitProperties } from './models/licit-document';
-import { setRuntime } from '@modusoperandi/licit-ui-commands';
+import type {
+  EditorRuntime,
+  LicitProps,
+} from '@modusoperandi/licit-tiptap/licit';
+import { Licit } from '@modusoperandi/licit-tiptap/licit';
+import { RuntimeService } from './runtime.service';
+import type { LicitDocument } from './models/licit-document';
+import { setRuntime } from '@modusoperandi/licit-tiptap/commands';
 import { repairDoc } from './utils/licit-repair';
 import { isDirty } from './utils';
+import { JSONContent, Editor } from '@tiptap/core';
+import { Plugin } from '@tiptap/pm/state';
+import React from 'react';
 
 /**
  * Default behavior is to fill area
@@ -52,7 +58,7 @@ export const FRAME = '.czi-editor-frame-body';
   // Changes from here down are handled by React
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditorComponent implements OnDestroy {
+export class LicitEditorComponent implements OnDestroy {
   /**
    * host for Licit (React) component
    */
@@ -61,12 +67,12 @@ export class EditorComponent implements OnDestroy {
   /**
    * Contains the current editor instance.
    */
-  public licit?: Licit;
+  public licit?: Editor;
 
   /**
    * Event fired when Licit Editor declares itself ready.
    */
-  readonly editorReady = output<Licit>();
+  readonly editorReady = output<Editor>();
 
   /**
    * Event fired when Licit Editor declares itself ready.
@@ -100,7 +106,7 @@ export class EditorComponent implements OnDestroy {
    * Id of the collaborative document
    * (requires collaboration server)
    */
-  docID = input<number | string>('');
+  docID = input<string>('');
 
   /**
    * Document Type
@@ -138,7 +144,7 @@ export class EditorComponent implements OnDestroy {
   /**
    * Sets plugins to use for current instance
    */
-  plugins = input<unknown[]>([]);
+  plugins = input<Plugin[]>([]);
 
   /**
    * Sets the referenced json.
@@ -163,7 +169,7 @@ export class EditorComponent implements OnDestroy {
   /**
    * React component properties.
    */
-  private readonly props = computed<LicitProperties>(() => ({
+  private readonly props = computed<LicitProps>(() => ({
     // Document used to initialize editor
     data: this.repair() ? repairDoc(this.doc()) : this.doc(),
     // When true, enables some debugging features in editor.
@@ -178,14 +184,14 @@ export class EditorComponent implements OnDestroy {
     // The height of the editor.
     // height: FILL,
     // Called by editor when a change happens.
-    onChange: (data: LicitDocument, isEmpty: boolean) => {
+    onChange: (data: JSONContent, isEmpty: boolean) => {
       Object.assign(this.props, { data });
-      this.editorChange.emit({ data, isEmpty });
+      this.editorChange.emit({ data: data as LicitDocument, isEmpty });
     },
     // When true editor will not show toolbar.
     readOnly: this.readOnly(),
     // Called by licit when react component is ready.
-    onReady: (licit: Licit) => {
+    onReady: (licit: Editor) => {
       this.licit = licit;
       this.editorReady.emit(licit);
     },
@@ -202,16 +208,16 @@ export class EditorComponent implements OnDestroy {
   }));
   //#endregion
 
+  private readonly runtime = inject(RuntimeService);
+  private readonly el = inject(ElementRef);
+
   /**
    * Instances get constructed by angular
    *
    * @param runtime Implementation of licit runtime.
    * @param el Host element provided by angular.
    */
-  constructor(
-    private readonly runtime: RuntimeService,
-    el: ElementRef
-  ) {
+  constructor() {
     setRuntime(this.runtime);
     effect(() => {
       this.runtime.styleProps = undefined; // resetting to get fresh styles.
@@ -220,17 +226,17 @@ export class EditorComponent implements OnDestroy {
     effect(() => {
       const reference = this.reference();
       if (reference) {
-        this.licit?.insertJSON(reference);
+        // TODO replace with tiptap version // this.licit?.insertJSON(reference);
       }
     });
     effect(() => {
-      // props are frozen by react, need to recreate
-      this.root?.unmount();
-      this.root = ReactDOM.createRoot(el.nativeElement);
+      // props are frozen by react, need to recreate. Reuse the root so React state persists.
+      this.root ??= ReactDOM.createRoot(this.el.nativeElement);
       this.root.render(
         React.createElement(
-          Licit as unknown as ComponentClass<LicitProperties>,
-          this.props()
+          React.StrictMode,
+          null,
+          React.createElement(Licit, this.props())
         )
       );
     });
@@ -248,7 +254,7 @@ export class EditorComponent implements OnDestroy {
    * @returns True if document is loaded and contians edits.
    */
   isDirty(): boolean {
-    return isDirty(this.licit?.editorView.state.doc);
+    return isDirty(this.licit?.state.doc);
   }
 
   /**
@@ -257,12 +263,16 @@ export class EditorComponent implements OnDestroy {
    * @param target HTML element that was clicked.
    */
   @HostListener('click', ['$event.target'])
-  protected onComponentClick(target: HTMLElement): void {
+  protected onComponentClick(target?: EventTarget | null): void {
     // Click is outside editor area but inside the frame.
-    if (!target?.closest(EDITOR) && target?.closest(FRAME)) {
+    if (
+      target instanceof Element &&
+      !target?.closest(EDITOR) &&
+      target?.closest(FRAME)
+    ) {
       // Return focus to the editor with cursor at end of document.
       // A kludge here to get editorView because of a regression bug.
-      this.licit?.goToEnd();
+      // TODO replace with tiptap version // this.licit?.goToEnd();
     }
   }
 

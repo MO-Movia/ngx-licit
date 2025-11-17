@@ -3,7 +3,7 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import type { NodeType, Schema } from 'prosemirror-model';
+import type { NodeType, Schema } from '@tiptap/pm/model';
 import {
   blankDocument,
   blankDocumentfromEditor,
@@ -11,7 +11,7 @@ import {
   blankNode,
   textNode,
 } from './licit-gen';
-import type { EditorState } from 'prosemirror-state';
+import type { EditorState } from '@tiptap/pm/state';
 
 /** mock schema generator */
 const MOCK_SCHEMA = () =>

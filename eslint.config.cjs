@@ -5,4 +5,9 @@ module.exports = [
     strict: false,
     header: config.header.mit,
   }),
+  {
+    rules: {
+      'sonarjs/todo-tag': 'warn',
+    },
+  },
 ];

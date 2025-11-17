@@ -3,7 +3,7 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import type {
+import {
   HttpClient,
   HttpErrorResponse,
   HttpResponse,
@@ -13,8 +13,8 @@ import type { EditorRuntime } from './models/editor-runtime';
 import type { Glossary } from './models/glossary';
 import { ACRONYMS_CONTENT, GLOSSARY_CONTENT } from './models/glossary';
 import { firstValueFrom } from 'rxjs';
-import type { Style } from '@modusoperandi/licit-custom-styles/StyleRuntime';
-import type { ImageLike } from '@modusoperandi/licit';
+import type { Style } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
+import type { ImageLike } from '@modusoperandi/licit-tiptap/licit';
 import type { RecentColor } from './models/recent-color';
 import type { LicitNode } from './models/licit-document';
 
@@ -42,10 +42,16 @@ const DEFAULT_STYLE: Style = {
  * Provides support methods to Licit editor
  *
  * @since 0.3.0
- * @deprecated example runtime service. Need to remove the need for the runtime service
  */
 @Injectable({ providedIn: 'root' })
 export class RuntimeService implements EditorRuntime {
+  private config = {
+    contentEndpoint: '/api/content/',
+    smartDocumentEndpoint: '/api/smart-document/',
+    getUserData: (_url: string) => Promise.resolve([] as RecentColor[]),
+    addUserData: (_url: string, data: RecentColor[]) => Promise.resolve(data),
+  };
+
   /**
    * Local cache of style properties to save on service calls.
    */
@@ -399,10 +405,8 @@ export class RuntimeService implements EditorRuntime {
   }
 
   private async saveColors(colors: RecentColor[]): Promise<RecentColor[]> {
-    const data = await firstValueFrom(
-      this.preferences.addUserData<RecentColor[]>(this.getColorsUrl(), colors)
-    );
-    return data.data;
+    const data = await this.config.addUserData(this.getColorsUrl(), colors);
+    return data;
   }
 
   /**
@@ -421,9 +425,7 @@ export class RuntimeService implements EditorRuntime {
   }
 
   getRecentColors(): Promise<RecentColor[]> {
-    return firstValueFrom(
-      this.preferences.getUserData<RecentColor[]>(this.getColorsUrl())
-    ).catch(() => []);
+    return this.config.getUserData(this.getColorsUrl()).catch(() => []);
   }
   /**
    * Renames an existing style on the service.
