@@ -75,12 +75,53 @@
             "polyfills": [
               "zone.js"
             ],
+             "allowedCommonJsDependencies": ["url"],
             "tsConfig": "projects/demo/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
               {
                 "glob": "**/*",
                 "input": "projects/demo/public"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@modusoperandi/licit-tiptap/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@modusoperandi/licit-citation/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@modusoperandi/licit-contrib-plugin-block-control/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@modusoperandi/licit-glossary/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@modusoperandi/licit-info-icon/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@modusoperandi/licit-multimedia/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@modusoperandi/licit-plugin-contrib-change-case/assets",
+                "output": "/assets/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/@modusoperandi/licit-vignette/assets",
+                "output": "/assets/"
               }
             ],
             "styles": [

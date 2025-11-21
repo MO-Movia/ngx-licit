@@ -4,7 +4,20 @@
  */
 
 import { Component, model } from '@angular/core';
-import { blankDocument, LicitEditorComponent } from '@modusoperandi/ngx-licit';
+import { EnhancedTableFigure } from '@modusoperandi/licit-contrib-plugin-block-control';
+import { LicitHighlightTextPlugin } from '@modusoperandi/licit-plugin-highlight';
+import { blankDocument, LicitEditorComponent, RuntimeService } from '@modusoperandi/ngx-licit';
+import { MultimediaPlugin } from '@modusoperandi/licit-multimedia';
+import { InfoIconPlugin } from '@modusoperandi/licit-info-icon';
+import { GlossaryPlugin, IndexItem } from '@modusoperandi/licit-glossary';
+import { TableExtensionPlugin } from '@modusoperandi/licit-table-mods';
+import { VignettePlugins } from '@modusoperandi/licit-vignette';
+import { RichCopyEmbedImagePlugin } from '@mo/licit-rich-copy-embed-images';
+import { CAPCOMODE, CapcoPlugin, SYSTEMCAPCO } from '@mo/licit-capco';
+import { PasteJSONPlugin } from '@modusoperandi/licit-paste-json';
+import { CustomstylePlugin } from '@modusoperandi/licit-custom-styles';
+import { CitationPlugin } from '@modusoperandi/licit-citation';
+// import { ChangeCasePlugin } from '@modusoperandi/licit-plugin-contrib-change-case';
 
 @Component({
   selector: 'licit-root',
@@ -15,4 +28,32 @@ import { blankDocument, LicitEditorComponent } from '@modusoperandi/ngx-licit';
 export class AppComponent {
   title = 'demo';
   doc = model(blankDocument());
+  constructor(private runtime: RuntimeService) {
+
+  }
+  getPlugins(edit = true, showCapco = false, hideNumbering = false) {
+    return [
+      new LicitHighlightTextPlugin(),
+      new EnhancedTableFigure(),
+      new MultimediaPlugin(),
+      new InfoIconPlugin(),
+      new GlossaryPlugin(),
+      new TableExtensionPlugin(),
+      ...VignettePlugins,
+      ...(showCapco
+        ? [
+            new CapcoPlugin(CAPCOMODE.FORCED, SYSTEMCAPCO.TBD),
+          ]
+        : []),
+      ...(edit
+        ? [
+            new CustomstylePlugin(this.runtime, hideNumbering),
+            new RichCopyEmbedImagePlugin(),
+            new PasteJSONPlugin(),
+          ]
+        : []),
+        new CitationPlugin(),
+        //new ChangeCasePlugin()
+    ];
+  }
 }

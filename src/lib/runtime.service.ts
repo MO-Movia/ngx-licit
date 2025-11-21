@@ -13,8 +13,8 @@ import type { EditorRuntime } from './models/editor-runtime';
 import type { Glossary } from './models/glossary';
 import { ACRONYMS_CONTENT, GLOSSARY_CONTENT } from './models/glossary';
 import { firstValueFrom } from 'rxjs';
-import type { Style } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
-import type { ImageLike } from '@modusoperandi/licit-tiptap/licit';
+import type { Style } from '@modusoperandi/licit-custom-styles/StyleRuntime';
+import type { ImageLike } from '@modusoperandi/licit-tiptap';
 import type { RecentColor } from './models/recent-color';
 import type { LicitNode } from './models/licit-document';
 
@@ -37,6 +37,7 @@ const DEFAULT_STYLE: Style = {
     toc: false,
   },
 };
+const STYLES_URI = 'http://greathints.com:3000';
 
 /**
  * Provides support methods to Licit editor
@@ -366,27 +367,54 @@ export class RuntimeService implements EditorRuntime {
   /**
    * Method for fetch style data from cache API.
    */
-  public async fetchStyles(documentType: string): Promise<Style[]> {
-    let styles = await firstValueFrom(
-      this.http.get<Style[]>(this.getStyleUrl(documentType), {
-        observe: 'response',
-      })
-    )
-      .then((r) => r.body)
-      .catch((error: HttpErrorResponse) =>
-        error.status === 404 ? null : Promise.reject(new Error(error.message))
-      );
-    if (styles) {
-      for (const style of styles) {
-        style.docType = documentType;
-      }
-    } else {
-      styles = [DEFAULT_STYLE];
-      this.saveStyleData(styles).catch((e) =>
-        console.error('Failed to save default styles', e)
-      );
+  // public async fetchStyles(documentType: string): Promise<Style[]> {
+  //   let styles = await firstValueFrom(
+  //     this.http.get<Style[]>(this.getStyleUrl(documentType), {
+  //       observe: 'response',
+  //     })
+  //   )
+  //     .then((r) => r.body)
+  //     .catch((error: HttpErrorResponse) =>
+  //       error.status === 404 ? null : Promise.reject(new Error(error.message))
+  //     );
+  //   if (styles) {
+  //     for (const style of styles) {
+  //       style.docType = documentType;
+  //     }
+  //   } else {
+  //     styles = [DEFAULT_STYLE];
+  //     this.saveStyleData(styles).catch((e) =>
+  //       console.error('Failed to save default styles', e)
+  //     );
+  //   }
+  //   return this.sortByStyleName(styles);
+  // }
+
+   /**
+   * Issue HTTP request to fetch styles from service.  Used internally by
+   * runtime, but should not be used externally.
+   *
+   * @returns Style array or empty array on error.
+   * @private
+   */
+   async fetchStyles(): Promise<Style[]> {
+    let styles: Style[];
+    try {
+    styles = await firstValueFrom(this.http.get<Style[]>(this.buildRoute('styles')));
+    } catch (error) {
+      // HTTP request or parsing of response failed.
+      // In either case, log an error and treat as if an empty array was
+      // returned.
+      styles = [];
+      console.error('Failed to fetch styles from service', error);
     }
-    return this.sortByStyleName(styles);
+
+    // Return the styles.
+    return styles;
+  }
+
+    buildRoute(...path: string[]) {
+    return [STYLES_URI, ...path].join('/');
   }
 
   private sortByStyleName(styles: Style[]): Style[] {
@@ -418,7 +446,8 @@ export class RuntimeService implements EditorRuntime {
     const type = this.documentType;
     if (!this.styleProps?.then || this.styleType !== type) {
       this.styleType = type;
-      this.styleProps = this.fetchStyles(type!);
+     // this.styleProps = this.fetchStyles(type!);
+      this.styleProps = this.fetchStyles();
     }
 
     return this.styleProps;

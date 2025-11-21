@@ -91,12 +91,12 @@ export async function normalizeDoc(
     width: '100vw',
     onChange: (doc) => subject.next(doc as LicitDocument),
     onReady: (licit) =>
-      subject.next(licit.state.doc as unknown as LicitDocument),
+      subject.next(licit.editorView?.state.doc as unknown as LicitDocument),
   };
   const root = ReactDOM.createRoot(div, {
-    onCaughtError: catchErr,
+    // onCaughtError: catchErr,
     onRecoverableError: catchErr,
-    onUncaughtError: catchErr,
+    // onUncaughtError: catchErr,
   });
   try {
     root.render(

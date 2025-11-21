@@ -14,10 +14,10 @@
 import type {
   Style,
   StyleRuntime,
-} from '@modusoperandi/licit-tiptap/plugins/custom-styles';
+} from '@modusoperandi/licit-custom-styles/StyleRuntime';
 import type { Glossary } from './glossary';
 import type { RenderCommentProps } from './render-comment-props';
-import type { ImageLike } from '@modusoperandi/licit-tiptap/licit';
+import type { ImageLike } from '@modusoperandi/licit-tiptap';
 import type { RecentColor } from './recent-color';
 
 export interface EditorRuntime extends StyleRuntime {

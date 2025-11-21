@@ -1,2 +1,14 @@
 <h1>NGX-Licit Demo</h1>
-<licit-editor [doc]="doc()" />
+<licit-editor
+  [doc]="doc()"
+  [width]="'100vw'"
+  [height]="'100vh'"
+  [debug]="true"
+  [docID]="''"
+  [embedded]="false"
+  [readOnly]="false"
+  [theme]="'dark'"
+  [plugins]="getPlugins()"
+  [docType]="'AFTTP'"
+>
+

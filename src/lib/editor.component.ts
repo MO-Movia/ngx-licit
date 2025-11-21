@@ -23,11 +23,11 @@ import ReactDOM from 'react-dom/client';
 import type {
   EditorRuntime,
   LicitProps,
-} from '@modusoperandi/licit-tiptap/licit';
+} from '@modusoperandi/licit-tiptap';
 import { Licit } from '@modusoperandi/licit-tiptap/licit';
 import { RuntimeService } from './runtime.service';
 import type { LicitDocument } from './models/licit-document';
-import { setRuntime } from '@modusoperandi/licit-tiptap/commands';
+import { setRuntime } from '@modusoperandi/licit-ui-commands';
 import { repairDoc } from './utils/licit-repair';
 import { isDirty } from './utils';
 import { JSONContent, Editor } from '@tiptap/core';
@@ -141,6 +141,9 @@ export class LicitEditorComponent implements OnDestroy {
    */
   width = input<string>();
 
+  theme = input<string>();
+
+
   /**
    * Sets plugins to use for current instance
    */
@@ -191,9 +194,9 @@ export class LicitEditorComponent implements OnDestroy {
     // When true editor will not show toolbar.
     readOnly: this.readOnly(),
     // Called by licit when react component is ready.
-    onReady: (licit: Editor) => {
-      this.licit = licit;
-      this.editorReady.emit(licit);
+    onReady: (licit) => {
+      this.licit = licit.editor;
+      this.editorReady.emit(this.licit);
     },
     // Width of the editor
     // width: FILL,
@@ -205,6 +208,7 @@ export class LicitEditorComponent implements OnDestroy {
     plugins: this.plugins(),
     height: this.height(),
     width: this.width(),
+    theme: this.theme()
   }));
   //#endregion
 
