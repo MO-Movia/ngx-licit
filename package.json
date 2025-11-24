@@ -22,12 +22,12 @@
   "peerDependencies": {
     "@angular/common": ">=19.0.0",
     "@angular/core": ">=19.0.0",
-    "@modusoperandi/color-picker": "^1.0.7",
-    "@modusoperandi/licit-contrib-plugin-block-control": "^1.0.5",
-    "@modusoperandi/licit-plugin-highlight": "^1.1.0",
     "@mo/licit-capco": "^3.0.8",
     "@mo/licit-rich-copy-embed-images": "^2.0.3",
+    "@modusoperandi/color-picker": "^1.0.7",
+    "@modusoperandi/licit-contrib-plugin-block-control": "^1.0.5",
     "@modusoperandi/licit-paste-json": "^1.0.0",
+    "@modusoperandi/licit-plugin-highlight": "^1.1.0",
     "@tiptap/core": "^2.0.0",
     "@tiptap/pm": "^2.0.0",
     "react": ">=18.0.0",
@@ -35,7 +35,8 @@
     "rxjs": "^7.0.0"
   },
   "dependencies": {
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "url": "^0.11.4"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^19.0.1",

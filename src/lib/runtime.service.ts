@@ -446,7 +446,6 @@ export class RuntimeService implements EditorRuntime {
     const type = this.documentType;
     if (!this.styleProps?.then || this.styleType !== type) {
       this.styleType = type;
-     // this.styleProps = this.fetchStyles(type!);
       this.styleProps = this.fetchStyles();
     }
 
