@@ -27,7 +27,15 @@ import { CitationPlugin } from '@modusoperandi/licit-citation';
 })
 export class AppComponent {
   title = 'demo';
-  doc = model(blankDocument());
+  doc = model({
+  ...blankDocument(),
+  content: [
+    {
+      type: 'paragraph',
+      content: []
+    }
+  ]
+});
   constructor(private runtime: RuntimeService) {
 
   }
