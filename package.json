@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/ngx-licit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -12,6 +12,7 @@
     "test:unit": "ng test --watch=false -c jenkins --code-coverage",
     "test:coverage": "ng test --watch=false -c jenkins --code-coverage",
     "lint": "ng lint",
+    "ci:build-app": "ng build demo --configuration production",
     "e2e": "ng e2e",
     "ci:build": "ng build --configuration production",
     "ci:test": "ng test --watch=false --code-coverage",
@@ -39,15 +40,16 @@
     "@modusoperandi/licit-table-mods":"^3.0.0",
     "@modusoperandi/licit-ui-commands":"^3.0.0",
     "@modusoperandi/licit-vignette":"^3.0.0",
+    "@modusoperandi/licit-export-pdf": "^3.0.0",
     "@tiptap/core": "^2.0.0",
     "@tiptap/pm": "^2.0.0",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
-    "rxjs": "^7.0.0"
+    "rxjs": "^7.0.0",
+    "url": "^0.11.4"
   },
   "dependencies": {
-    "tslib": "^2.8.1",
-    "url": "^0.11.4"
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^19.0.1",
@@ -71,6 +73,7 @@
     "@angular/platform-browser-dynamic": "^19.2.14",
     "@angular/router": "^19.2.14",
     "@modusoperandi/eslint-config": "^3.0.1",
+    "@modusoperandi/licit-tiptap": ">=0.0.1",
     "@tiptap/core": "^2.9.1",
     "@tiptap/extension-collaboration": "^2.1.0",
     "@tiptap/extension-collaboration-cursor": "^2.1.0",

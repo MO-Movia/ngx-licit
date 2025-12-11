@@ -122,7 +122,13 @@
                 "glob": "**/*",
                 "input": "node_modules/@modusoperandi/licit-vignette/assets",
                 "output": "/assets/"
+              },
+                 {
+                "glob": "**/*",
+                "input": "node_modules/@modusoperandi/licit-export-pdf/assets",
+                "output": "/assets/"
               }
+
             ],
             "styles": [
               "projects/demo/src/styles.scss"

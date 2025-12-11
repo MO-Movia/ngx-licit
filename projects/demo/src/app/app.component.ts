@@ -17,6 +17,10 @@ import { CAPCOMODE, CapcoPlugin, SYSTEMCAPCO } from '@mo/licit-capco';
 import { PasteJSONPlugin } from '@modusoperandi/licit-paste-json';
 import { CustomstylePlugin } from '@modusoperandi/licit-custom-styles';
 import { CitationPlugin } from '@modusoperandi/licit-citation';
+import { ObjectIdPlugin } from '@mo/licit-object-id';
+import { ReferencingPlugin } from '@mo/licit-referencing';
+import { ExportPDFPlugin } from '@modusoperandi/licit-export-pdf';
+
 // import { ChangeCasePlugin } from '@modusoperandi/licit-plugin-contrib-change-case';
 
 @Component({
@@ -60,7 +64,10 @@ export class AppComponent {
             new PasteJSONPlugin(),
           ]
         : []),
+        new ExportPDFPlugin(true),
+        new ReferencingPlugin(),
         new CitationPlugin(),
+        new ObjectIdPlugin()
         //new ChangeCasePlugin()
     ];
   }
