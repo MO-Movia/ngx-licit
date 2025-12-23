@@ -34,7 +34,18 @@ function processNodeContent(node: LicitNode): void {
         repairTextNode(content);
         break;
       case 'table_cell':
+        content.type = 'tableCell'; // czi to tiptap type
         repairTableCellNode(content);
+        break;
+      case 'table_header':
+        content.type = 'tableHeader'; // czi to tiptap type
+        repairTableCellNode(content);
+        break;
+      case 'table_row':
+        content.type = 'tableRow'; // czi to tiptap type
+        break;
+      case 'hard_break':
+        content.type = 'hardBreak'; // czi to tiptap type
         break;
     }
     if (Array.isArray(content?.content)) {

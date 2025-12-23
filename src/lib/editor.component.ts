@@ -14,16 +14,14 @@ import {
   output,
   effect,
   inject,
+  ViewEncapsulation,
 } from '@angular/core';
 
 // React stuff
 import ReactDOM from 'react-dom/client';
 
 // Licit stuff
-import type {
-  EditorRuntime,
-  LicitProps,
-} from '@modusoperandi/licit-tiptap';
+import type { EditorRuntime, LicitProps } from '@modusoperandi/licit-tiptap';
 import { Licit } from '@modusoperandi/licit-tiptap/licit';
 import { RuntimeService } from './runtime.service';
 import type { LicitDocument } from './models/licit-document';
@@ -54,7 +52,11 @@ export const FRAME = '.czi-editor-frame-body';
 @Component({
   selector: 'licit-editor',
   template: '',
-  styleUrls: ['./editor.component.scss'],
+  encapsulation: ViewEncapsulation.None,
+  styleUrls: [
+    './editor.component.scss',
+    '../../node_modules/@modusoperandi/licit-tiptap/styles/stylesAll.css',
+  ],
   // Changes from here down are handled by React
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -143,7 +145,6 @@ export class LicitEditorComponent implements OnDestroy {
 
   theme = input<string>();
 
-
   /**
    * Sets plugins to use for current instance
    */
@@ -208,7 +209,7 @@ export class LicitEditorComponent implements OnDestroy {
     plugins: this.plugins(),
     height: this.height(),
     width: this.width(),
-    theme: this.theme()
+    theme: this.theme(),
   }));
   //#endregion
 
@@ -234,8 +235,9 @@ export class LicitEditorComponent implements OnDestroy {
       }
     });
     effect(() => {
+      this.root?.unmount();
       // props are frozen by react, need to recreate. Reuse the root so React state persists.
-      this.root ??= ReactDOM.createRoot(this.el.nativeElement);
+      this.root = ReactDOM.createRoot(this.el.nativeElement);
       this.root.render(
         React.createElement(
           React.StrictMode,
