@@ -75,7 +75,10 @@
             "polyfills": [
               "zone.js"
             ],
-             "allowedCommonJsDependencies": ["url"],
+            "allowedCommonJsDependencies": [
+              "url"
+            ],
+            "preserveSymlinks": true,
             "tsConfig": "projects/demo/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
@@ -123,12 +126,11 @@
                 "input": "node_modules/@modusoperandi/licit-vignette/assets",
                 "output": "/assets/"
               },
-                 {
+              {
                 "glob": "**/*",
                 "input": "node_modules/@modusoperandi/licit-export-pdf/assets",
                 "output": "/assets/"
               }
-
             ],
             "styles": [
               "projects/demo/src/styles.scss"

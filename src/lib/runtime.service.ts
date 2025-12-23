@@ -5,7 +5,6 @@
 
 import {
   HttpClient,
-  HttpErrorResponse,
   HttpResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -13,7 +12,7 @@ import type { EditorRuntime } from './models/editor-runtime';
 import type { Glossary } from './models/glossary';
 import { ACRONYMS_CONTENT, GLOSSARY_CONTENT } from './models/glossary';
 import { firstValueFrom } from 'rxjs';
-import type { Style } from '@modusoperandi/licit-custom-styles/StyleRuntime';
+import type { Style } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
 import type { ImageLike } from '@modusoperandi/licit-tiptap';
 import type { RecentColor } from './models/recent-color';
 import type { LicitNode } from './models/licit-document';

@@ -14,7 +14,7 @@
 import type {
   Style,
   StyleRuntime,
-} from '@modusoperandi/licit-custom-styles/StyleRuntime';
+} from '@modusoperandi/licit-tiptap/plugins/custom-styles';
 import type { Glossary } from './glossary';
 import type { RenderCommentProps } from './render-comment-props';
 import type { ImageLike } from '@modusoperandi/licit-tiptap';

@@ -27,7 +27,7 @@ import type {
 import { Licit } from '@modusoperandi/licit-tiptap/licit';
 import { RuntimeService } from './runtime.service';
 import type { LicitDocument } from './models/licit-document';
-import { setRuntime } from '@modusoperandi/licit-ui-commands';
+import { setRuntime } from '@modusoperandi/licit-tiptap/commands';
 import { repairDoc } from './utils/licit-repair';
 import { isDirty } from './utils';
 import { JSONContent, Editor } from '@tiptap/core';
