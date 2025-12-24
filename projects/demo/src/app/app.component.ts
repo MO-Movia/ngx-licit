@@ -3,13 +3,20 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { Component, model } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  model,
+} from '@angular/core';
 import { EnhancedTableFigure } from '@modusoperandi/licit-tiptap/plugins/block-control';
 import { LicitHighlightTextPlugin } from '@modusoperandi/licit-tiptap/plugins/highlight';
 import {
   blankDocument,
+  blankNode,
   LicitEditorComponent,
   RuntimeService,
+  textNode,
 } from '@modusoperandi/ngx-licit';
 import { MultimediaPlugin } from '@modusoperandi/licit-tiptap/plugins/multimedia';
 import { InfoIconPlugin } from '@modusoperandi/licit-tiptap/plugins/info-icon';
@@ -21,8 +28,6 @@ import { PasteJSONPlugin } from '@modusoperandi/licit-tiptap/plugins/paste-json'
 import { CustomstylePlugin } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
 import { CitationPlugin } from '@modusoperandi/licit-tiptap/plugins/citation';
 import { ObjectIdPlugin } from '@modusoperandi/licit-tiptap/plugins/object-id';
-import { ReferencingPlugin } from '@modusoperandi/licit-referencing';
-import { FloatingMenuPlugin } from '@modusoperandi/licit-floatingmenu';
 import { ExportPDFPlugin } from '@modusoperandi/licit-tiptap/plugins/export-pdf';
 import { ChangeCasePlugin } from '@modusoperandi/licit-tiptap/plugins/change-case';
 import {
@@ -30,10 +35,10 @@ import {
   CAPCOMODE,
   SYSTEMCAPCO,
 } from '@modusoperandi/licit-capco';
-import { FloatRuntime } from '@modusoperandi/licit-floatingmenu/model';
 
 @Component({
   selector: 'licit-root',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LicitEditorComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -41,17 +46,25 @@ import { FloatRuntime } from '@modusoperandi/licit-floatingmenu/model';
 export class AppComponent {
   title = 'demo';
   doc = model({
-    ...blankDocument(),
-    content: [
-      {
-        type: 'paragraph',
-        content: [],
-      },
-    ],
+    ...blankDocument(
+      ...new Array(100)
+        .fill(null)
+        .map((_, i) =>
+          blankNode(
+            'paragraph',
+            textNode(
+              `Para ${i}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer id ipsum nunc. Pellentesque ultrices interdum ornare. Nunc vestibulum nec lacus vitae tincidunt. Vestibulum quis viverra neque. Ut egestas orci sed velit pulvinar suscipit. Ut sed porttitor tellus, eu cursus odio. Mauris neque enim, eleifend ac mauris ut, maximus consectetur nisl. Nulla ligula eros, egestas vel orci in, mattis euismod leo. Sed varius volutpat sapien, eu imperdiet nibh mattis a. Quisque nec laoreet eros.`
+            )
+          )
+        )
+    ),
   });
   constructor(private readonly runtime: RuntimeService) {}
   // bug in capco plugin will lock up browser without runtime.
-  getPlugins(edit = true, showCapco = false, hideNumbering = false) {
+  getPlugins = computed(() => {
+    const edit = true,
+      showCapco = true,
+      hideNumbering = false;
     return [
       new LicitHighlightTextPlugin(),
       new EnhancedTableFigure(),
@@ -61,7 +74,15 @@ export class AppComponent {
       new TableExtensionPlugin(),
       ...VignettePlugins,
       ...(showCapco
-        ? [new CapcoPlugin(CAPCOMODE.FORCED, SYSTEMCAPCO.TBD)]
+        ? [
+            new CapcoPlugin(CAPCOMODE.FORCED, SYSTEMCAPCO.TBD, {
+              capcoService: {
+                openManagementDialog: () => Promise.resolve(null),
+                saveCapco: () => Promise.resolve(true),
+                getCapco: () => Promise.resolve([]),
+              },
+            }),
+          ]
         : []),
       ...(edit
         ? [
@@ -71,11 +92,9 @@ export class AppComponent {
           ]
         : []),
       new ExportPDFPlugin(true),
-      new ReferencingPlugin(),
-      new FloatingMenuPlugin({} as FloatRuntime),
       new CitationPlugin(),
       new ObjectIdPlugin(),
       new ChangeCasePlugin(),
     ];
-  }
+  });
 }

@@ -15,10 +15,11 @@ const PM_DOC = 'doc';
  *
  * @returns document
  */
-export function blankDocument(): LicitDocument {
+export function blankDocument(...content: LicitNode[]): LicitDocument {
   return {
     type: PM_DOC,
     attrs: {},
+    content,
   };
 }
 /**
@@ -26,10 +27,11 @@ export function blankDocument(): LicitDocument {
  *
  * @returns document node
  */
-export function blankNode(type: string): LicitNode {
+export function blankNode(type: string, ...content: LicitNode[]): LicitNode {
   return {
     type,
     attrs: {},
+    content,
   };
 }
 /**
