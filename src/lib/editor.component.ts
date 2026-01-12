@@ -14,21 +14,24 @@ import {
   output,
   effect,
   inject,
-  ViewEncapsulation,
 } from '@angular/core';
 
 // React stuff
 import ReactDOM from 'react-dom/client';
 
 // Licit stuff
-import type { EditorRuntime, LicitProps } from '@modusoperandi/licit-tiptap';
-import { Licit } from '@modusoperandi/licit-tiptap/licit';
+import type {
+  EditorRuntime,
+  LicitProps,
+  LicitHandle,
+} from '@modusoperandi/licit-tiptap';
+import { Licit } from '@modusoperandi/licit-tiptap';
 import { RuntimeService } from './runtime.service';
 import type { LicitDocument } from './models/licit-document';
 import { setRuntime } from '@modusoperandi/licit-tiptap/commands';
 import { repairDoc } from './utils/licit-repair';
 import { isDirty } from './utils';
-import { JSONContent, Editor } from '@tiptap/core';
+import { JSONContent } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import React from 'react';
 
@@ -52,11 +55,7 @@ export const FRAME = '.czi-editor-frame-body';
 @Component({
   selector: 'licit-editor',
   template: '',
-  encapsulation: ViewEncapsulation.None,
-  styleUrls: [
-    './editor.component.scss',
-    '../../node_modules/@modusoperandi/licit-tiptap/styles/stylesAll.css',
-  ],
+  styleUrls: ['./editor.component.scss'],
   // Changes from here down are handled by React
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -69,12 +68,12 @@ export class LicitEditorComponent implements OnDestroy {
   /**
    * Contains the current editor instance.
    */
-  public licit?: Editor;
+  public licit?: LicitHandle;
 
   /**
    * Event fired when Licit Editor declares itself ready.
    */
-  readonly editorReady = output<Editor>();
+  readonly editorReady = output<LicitHandle>();
 
   /**
    * Event fired when Licit Editor declares itself ready.
@@ -195,8 +194,8 @@ export class LicitEditorComponent implements OnDestroy {
     // When true editor will not show toolbar.
     readOnly: this.readOnly(),
     // Called by licit when react component is ready.
-    onReady: (licit) => {
-      this.licit = licit.editor;
+    onReady: (licit: LicitHandle) => {
+      this.licit = licit;
       this.editorReady.emit(this.licit);
     },
     // Width of the editor
@@ -231,7 +230,7 @@ export class LicitEditorComponent implements OnDestroy {
     effect(() => {
       const reference = this.reference();
       if (reference) {
-        // TODO replace with tiptap version // this.licit?.insertJSON(reference);
+        this.licit?.insertJSON(JSON.parse(reference) as JSONContent);
       }
     });
     effect(() => {
@@ -260,7 +259,7 @@ export class LicitEditorComponent implements OnDestroy {
    * @returns True if document is loaded and contians edits.
    */
   isDirty(): boolean {
-    return isDirty(this.licit?.state.doc);
+    return isDirty(this.licit?.editor?.state.doc);
   }
 
   /**
@@ -278,7 +277,7 @@ export class LicitEditorComponent implements OnDestroy {
     ) {
       // Return focus to the editor with cursor at end of document.
       // A kludge here to get editorView because of a regression bug.
-      // TODO replace with tiptap version // this.licit?.goToEnd();
+      this.licit?.goToEnd();
     }
   }
 
