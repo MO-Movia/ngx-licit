@@ -47,6 +47,9 @@ function processNodeContent(node: LicitNode): void {
       case 'hard_break':
         content.type = 'hardBreak'; // czi to tiptap type
         break;
+      case 'horizontal_rule':
+        content.type = 'horizontalRule'; // czi to tiptap type
+        break;
     }
     if (Array.isArray(content?.content)) {
       processNodeContent(content);
@@ -65,6 +68,8 @@ function repairTableCellNode(content: LicitNode): void {
   ) {
     content.attrs.colwidth = null;
   }
+  if(content?.attrs?.background)
+  content.attrs.backgroundColor = content.attrs?.background;
   if (!content.content?.length) {
     content.content = [
       {
