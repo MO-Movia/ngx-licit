@@ -25,6 +25,9 @@ export function repairDoc(docJson: LicitDocument): LicitDocument {
 }
 
 function processNodeContent(node: LicitNode): void {
+  if (node.type === 'horizontal_rule') {
+    node.type = 'horizontalRule';
+  }
   if (!node?.content?.length) {
     return;
   }
