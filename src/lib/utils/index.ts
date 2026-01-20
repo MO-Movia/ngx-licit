@@ -6,3 +6,4 @@
 export * from './is-licit-document';
 export * from './licit-gen';
 export * from './licit-repair';
+export * from './normalizer';

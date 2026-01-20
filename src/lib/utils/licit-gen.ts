@@ -3,7 +3,11 @@
  * @copyright Copyright 2025 Modus Operandi Inc. All Rights Reserved.
  */
 
-import type { LicitNode, LicitDocument } from '../models/licit-document';
+import type {
+  LicitNode,
+  LicitDocument,
+  LicitAttrs,
+} from '../models/licit-document';
 import type { EditorState } from '@tiptap/pm/state';
 import type { Schema } from '@tiptap/pm/model';
 const PM_DOC = 'doc';
@@ -31,6 +35,22 @@ export function blankNode(type: string, ...content: LicitNode[]): LicitNode {
   return {
     type,
     attrs: {},
+    content,
+  };
+}
+/**
+ * Create a blank document node.
+ *
+ * @returns document node
+ */
+export function attrsNode(
+  type: string,
+  attrs: LicitAttrs | undefined,
+  ...content: LicitNode[]
+): LicitNode {
+  return {
+    type,
+    attrs,
     content,
   };
 }
