@@ -142,7 +142,11 @@ export class LicitEditorComponent implements OnDestroy {
    */
   width = input<string>();
 
-  theme = input<string>();
+  /**
+   * Theme for the editor.
+   * Default supported is 'light' or 'dark'.
+   */
+  theme = input<string>('dark');
 
   /**
    * Sets plugins to use for current instance
