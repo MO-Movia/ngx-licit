@@ -30,6 +30,7 @@ import { CitationPlugin } from '@modusoperandi/licit-tiptap/plugins/citation';
 import { ObjectIdPlugin } from '@modusoperandi/licit-tiptap/plugins/object-id';
 import { ExportPDFPlugin } from '@modusoperandi/licit-tiptap/plugins/export-pdf';
 import { ChangeCasePlugin } from '@modusoperandi/licit-tiptap/plugins/change-case';
+import { FloatingMenuPlugin } from '@modusoperandi/licit-tiptap/plugins/floatingmenu';
 import {
   CapcoPlugin,
   CAPCOMODE,
@@ -61,6 +62,68 @@ export class AppComponent {
   });
   constructor(private readonly runtime: RuntimeService) {}
   // bug in capco plugin will lock up browser without runtime.
+  dummyFloatRuntime = {
+    isReadonly: false, // Need to get from KNITE
+    createSlice: async (slice: any) => {
+      return {
+        name: 'asd',
+        description:'asdffggg',
+        id: slice?.id ?? 'dummy-slice-id',
+        referenceType:'type',
+        source:'source',
+        from:'from',
+        to:'to',
+        ids: slice?.ids ?? ['id1', 'id2'],
+
+      };
+    },
+
+    retrieveSlices: async () => {
+      return [];
+    },
+
+    insertInfoIconFloat: () => {
+      // no-op
+    },
+
+    insertCitationFloat: () => {
+      // no-op
+    },
+
+    insertReference: async () => {
+      return  {
+        name: 'asd',
+        description:'asdffggg',
+        id:   'dummy-slice-id',
+        referenceType:'type',
+        source:'source',
+        from:'from',
+        to:'to',
+        ids:   ['id1', 'id2'],
+
+      };
+    },
+  };
+  floatingMenuHandlers = {
+    enableCitationAndComment: () => true,
+    enableTagAndInfoicon: () => true,
+    enableCopy: () => true,
+    enablePaste: () => true,
+    enablePasteAsReference: () => true,
+
+    addComment: () => console.log('Add Comment'),
+    addTag: () => console.log('Add Tag'),
+    createCitation: () => console.log('Create Citation'),
+    createInfoIcon: () => console.log('Create Infoicon'),
+    copyRich: () => console.log('Copy'),
+    copyPlain: () => console.log('Copy Plain'),
+    paste: () => console.log('Paste'),
+    pastePlain: () => console.log('Paste Plain'),
+    pasteAsReference: () => console.log('Paste As Reference'),
+    createSlice: () => console.log('Create Referent'),
+    showReferences: () => console.log('Insert Reference'),
+  };
+
   getPlugins = computed(() => {
     const edit = true,
       showCapco = true,
@@ -95,6 +158,9 @@ export class AppComponent {
       new CitationPlugin(),
       new ObjectIdPlugin(),
       new ChangeCasePlugin(),
+      new FloatingMenuPlugin(this.dummyFloatRuntime,
+        {}, // UrlConfig (optional)
+        ),
     ];
   });
 }
