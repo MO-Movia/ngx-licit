@@ -1,3 +1,8 @@
+<button (click)="json.click()" [disabled]="loading()"><input #json type="file" accept=".json" (change)="importJson(json.files?.[0])"/>Import JSON</button>
+<button (click)="dx.click()" [disabled]="loading()"><input #dx type="file" accept=".docx" (change)="importDocx(dx.files?.[0])"/>Import Docx</button>
+<button (click)="dx.click()" [disabled]="loading()"><input #dx type="file" accept=".docx" (change)="importDocx(dx.files?.[0], 'Opinionated')"/>Import Docx (opinionated)</button>
+<button (click)="fm.click()" [disabled]="loading()"><input #fm type="file" accept=".zip" (change)="importFrameMaker(fm.files?.[0])"/>Import FrameMaker</button>
+<a download="doc.json" [href]="'data:text/plain;charset=utf-8, ' + docJsonData()"><button>Export</button></a>
 <licit-editor
   [doc]="doc()"
   [width]="'100vw'"

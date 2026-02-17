@@ -8,12 +8,14 @@ import {
   Component,
   computed,
   model,
+  signal,
 } from '@angular/core';
 import { EnhancedTableFigure } from '@modusoperandi/licit-tiptap/plugins/block-control';
 import { LicitHighlightTextPlugin } from '@modusoperandi/licit-tiptap/plugins/highlight';
 import {
   blankDocument,
   blankNode,
+  LicitDocument,
   LicitEditorComponent,
   RuntimeService,
   textNode,
@@ -35,6 +37,7 @@ import {
   CAPCOMODE,
   SYSTEMCAPCO,
 } from '@modusoperandi/licit-capco';
+import { DocumentImporterService } from './document-importer.service';
 
 @Component({
   selector: 'licit-root',
@@ -45,7 +48,7 @@ import {
 })
 export class AppComponent {
   title = 'demo';
-  doc = model({
+  doc = model<LicitDocument>({
     ...blankDocument(
       ...new Array(100)
         .fill(null)
@@ -59,7 +62,11 @@ export class AppComponent {
         )
     ),
   });
-  constructor(private readonly runtime: RuntimeService) {}
+  protected loading = signal(false);
+  protected docJsonData = computed(() => {
+    return encodeURIComponent(JSON.stringify(this.doc(), null, 4))
+  })
+  constructor(private readonly runtime: RuntimeService, private readonly importer: DocumentImporterService) {}
   // bug in capco plugin will lock up browser without runtime.
   getPlugins = computed(() => {
     const edit = true,
@@ -97,4 +104,37 @@ export class AppComponent {
       new ChangeCasePlugin(),
     ];
   });
+
+  async importJson(file?: File) {
+    if(!file) {return}; 
+
+    this.loading.set(true);
+    try {
+      this.doc.set(await this.importer.parseJsonFile(file) as unknown as LicitDocument);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  async importDocx(file?: File, type?: string) {
+    if(!file) {return}; 
+
+    this.loading.set(true);
+    try {
+      this.doc.set(await this.importer.parseDocxFile(file, type) as unknown as LicitDocument);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  async importFrameMaker(file?: File) {
+    if(!file) {return}; 
+
+    this.loading.set(true);
+    try {
+      this.doc.set(await this.importer.parseFMZip(file) as unknown as LicitDocument);
+    } finally {
+      this.loading.set(false);
+    }
+  }
 }
