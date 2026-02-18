@@ -51,7 +51,8 @@ export class DocumentImporterService {
       toBase64DataUrl(f),
     );
 
-    return new LicitConverter(asTransformConfig(config)).parseFrameMakerHTML5(elements);
+    const doc = new LicitConverter(asTransformConfig(config)).parseFrameMakerHTML5(elements);
+     return removeEmptyParagraphFromJSON(doc);
   }
 
   public async parseJsonFile(file: File): Promise<LicitDocumentJSON> {
