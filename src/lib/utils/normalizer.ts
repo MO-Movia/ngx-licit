@@ -5,9 +5,9 @@
 
 import { debounceTime, firstValueFrom, map, Subject, timeout } from 'rxjs';
 import ReactDOM from 'react-dom/client';
-import { Licit, LicitProps } from '@modusoperandi/licit-tiptap/licit';
+import { Licit, LicitProps } from '@modusoperandi/licit-tiptap';
 import type { Plugin } from '@tiptap/pm/state';
-import React, { ComponentClass } from 'react';
+import React from 'react';
 import { LicitDocument } from '../models/licit-document';
 import { repairDoc } from './licit-repair';
 
@@ -20,7 +20,7 @@ import { repairDoc } from './licit-repair';
  */
 export async function normalizeDoc(
   doc: LicitDocument,
-  plugins: Plugin[],
+  plugins: Plugin[] = [],
   debounce = 1000
 ): Promise<LicitDocument> {
   const div = document.createElement('div');
@@ -31,7 +31,7 @@ export async function normalizeDoc(
   const props: LicitProps = {
     data: repairDoc(doc),
     plugins,
-    readOnly: true,
+    readOnly: false,
     disabled: false,
     embedded: false,
     height: '100vh',
@@ -41,13 +41,15 @@ export async function normalizeDoc(
       subject.next(licit.editorView?.state.doc as unknown as LicitDocument),
   };
   const root = ReactDOM.createRoot(div, {
-    // onCaughtError: catchErr,
     onRecoverableError: catchErr,
-    // onUncaughtError: catchErr,
   });
   try {
     root.render(
-      React.createElement(Licit as unknown as ComponentClass<LicitProps>, props)
+      React.createElement(
+        React.StrictMode,
+        null,
+        React.createElement(Licit, props)
+      )
     );
     // May trigger cascade of updates, wait for document to be "stable". Timeout as failsafe for when react doesn't respond.
     return await firstValueFrom(
@@ -55,7 +57,7 @@ export async function normalizeDoc(
         timeout(debounce * 2),
         debounceTime(debounce),
         // normalize ProseMirror Node to plain JSON object.
-        map((d) => structuredClone(d))
+        map((d) => JSON.parse(JSON.stringify(d)) as LicitDocument) //NOSONAR structuredClone does not work on objects with functions.
       )
     );
   } finally {

@@ -205,7 +205,7 @@ export class LicitEditorComponent implements OnDestroy {
     // Width of the editor
     // width: FILL,
     // Runtime for uploading images
-    // Typing issues between diffrent runtime definitions prevent proper fix. Fix once all Licit Type issues are resolved.
+    // Typing issues between different runtime definitions prevent proper fix. Fix once all Licit Type issues are resolved.
     runtime: this.runtime as unknown as EditorRuntime,
     // Plugins for editor
     // Enable ObjectIdPlugin and CustomstylePlugin by default
