@@ -1,5 +1,27 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.toolbar {
+  flex: 0 0 auto;
+}
+
+licit-editor {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 button {
-    input[type=file] {
-        display: none;
-    }
+  input[type='file'] {
+    display: none;
+  }
 }
