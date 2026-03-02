@@ -12,76 +12,30 @@
 // be part of the same runtime implementation passed to editor component
 
 import type {
-  Style,
   StyleRuntime,
+  Style,
 } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
-import type { Glossary } from './glossary';
-import type { RenderCommentProps } from './render-comment-props';
-import type { ImageLike } from '@modusoperandi/licit-tiptap';
-import type { RecentColor } from './recent-color';
+// import type { GlossaryService } from '@modusoperandi/licit-tiptap/plugins/glossary'
+import type { EditorRuntime as RCService } from '@modusoperandi/licit-tiptap/plugins/copy-images';
+import type {
+  ImageLike,
+  EditorRuntime as MMService,
+} from '@modusoperandi/licit-tiptap/plugins/multimedia';
+import { RecentColor } from './recent-color';
 
-export interface EditorRuntime extends StyleRuntime {
-  // Image Proxy
-  canProxyImageSrc?: (src: string) => boolean;
-  getProxyImageSrc?: (src: string) => Promise<string>;
+export interface EditorRuntime
+  extends StyleRuntime,
+    // GlossaryService,
+    RCService,
+    MMService {}
 
-  // Image Upload
-  canUploadImage?: () => boolean;
-  uploadImage?: (obj: File) => Promise<ImageLike>;
-
-  // Video Proxy
-  canProxyVideoSrc?: (src: string) => boolean;
-  getProxyVideoSrc?: (src: string) => string;
-
-  // Video Upload
-  canUploadVideo?: () => boolean;
-  uploadVideo?: (obj: File) => Promise<ImageLike>;
-
-  // Get Video
-  getVideoSrc?: (id: string) => Promise<string>;
-
-  // Comments
-  canComment?: () => boolean;
-  createCommentThreadID?: () => string;
-  renderComment?: (props: RenderCommentProps) => React.ReactElement | null;
-
-  // External HTML
-  canLoadHTML?: () => boolean;
-  loadHTML?: () => Promise<string>;
-
-  /**
-   * Gets array of styles from the service
-   */
-  getStylesAsync(): Promise<Style[]>;
-
-  getRecentColors(): Promise<RecentColor[]>;
-
-  /**
-   * Renames an existing style from the service.
-   *
-   * @param oldStyleName Name of style to rename.
-   * @param newStyleName New name for style.
-   */
-  renameStyle(oldStyleName: string, newStyleName: string): Promise<Style[]>;
-
-  /**
-   * Remove an existing style
-   *
-   * @param styleName Name of style to remove.
-   */
-  removeStyle(styleName: string): Promise<Style[]>;
-
-  /**
-   * Return Acronym data
-   *
-   * @param abbreviation abbreviation.
-   */
-  getAcronyms?: (abbreviation: string) => Promise<Glossary[]>;
-
-  /**
-   * Return Acronym data
-   *
-   * @param abbreviation abbreviation.
-   */
-  getGlossary?: (abbreviation: string) => Promise<Glossary[]>;
+export interface SimpleRuntime {
+  uploadImage(blob: Blob): Promise<ImageLike>;
+  getProxyImageSrc(src: string): Promise<string>;
+  getVideoSrc(id: string): Promise<string>;
+  uploadVideo(blob: Blob): Promise<ImageLike>;
+  saveStyles(styles: Style[]): Promise<Style[]>;
+  saveColors(colors: RecentColor[]): Promise<RecentColor[]>;
+  getStyles(): Promise<Style[]>;
+  getColors(): Promise<RecentColor[]>;
 }

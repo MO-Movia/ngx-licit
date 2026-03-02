@@ -21,19 +21,17 @@ import ReactDOM from 'react-dom/client';
 
 // Licit stuff
 import type {
-  EditorRuntime,
   LicitProps,
   LicitHandle,
-} from '@modusoperandi/licit-tiptap';
-import { Licit } from '@modusoperandi/licit-tiptap';
-import { RuntimeService } from './runtime.service';
+} from '@modusoperandi/licit-tiptap/licit';
+import { Licit } from '@modusoperandi/licit-tiptap/licit';
 import type { LicitDocument } from './models/licit-document';
 import { setRuntime } from '@modusoperandi/licit-tiptap/commands';
-import { repairDoc } from './utils/licit-repair';
-import { isDirty } from './utils';
+import { repairDoc, isDirty } from '@modusoperandi/licit-tiptap/utils';
 import { JSONContent } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import React from 'react';
+import { EditorRuntime } from './models/editor-runtime';
 
 /**
  * Default behavior is to fill area
@@ -206,7 +204,7 @@ export class LicitEditorComponent implements OnDestroy {
     // width: FILL,
     // Runtime for uploading images
     // Typing issues between different runtime definitions prevent proper fix. Fix once all Licit Type issues are resolved.
-    runtime: this.runtime as unknown as EditorRuntime,
+    runtime: this.runtime(),
     // Plugins for editor
     // Enable ObjectIdPlugin and CustomstylePlugin by default
     plugins: this.plugins(),
@@ -216,7 +214,7 @@ export class LicitEditorComponent implements OnDestroy {
   }));
   //#endregion
 
-  private readonly runtime = inject(RuntimeService);
+  readonly runtime = input<EditorRuntime>();
   private readonly el = inject(ElementRef);
 
   /**
@@ -227,10 +225,6 @@ export class LicitEditorComponent implements OnDestroy {
    */
   constructor() {
     setRuntime(this.runtime);
-    effect(() => {
-      this.runtime.styleProps = undefined; // resetting to get fresh styles.
-      this.runtime.documentType = this.docType();
-    });
     effect(() => {
       const reference = this.reference();
       if (reference) {

@@ -5,11 +5,11 @@
 
 import { debounceTime, firstValueFrom, map, Subject, timeout } from 'rxjs';
 import ReactDOM from 'react-dom/client';
-import { Licit, LicitProps } from '@modusoperandi/licit-tiptap';
+import { Licit, LicitProps } from '@modusoperandi/licit-tiptap/licit';
 import type { Plugin } from '@tiptap/pm/state';
 import React from 'react';
 import { LicitDocument } from '../models/licit-document';
-import { repairDoc } from './licit-repair';
+import { repairDoc } from '@modusoperandi/licit-tiptap/utils';
 
 /**
  * Runs the document through an editor to get the normalized document json.

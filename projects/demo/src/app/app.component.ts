@@ -13,13 +13,16 @@ import {
 import { EnhancedTableFigure } from '@modusoperandi/licit-tiptap/plugins/block-control';
 import { LicitHighlightTextPlugin } from '@modusoperandi/licit-tiptap/plugins/highlight';
 import {
-  blankDocument,
-  blankNode,
   LicitDocument,
   LicitEditorComponent,
+  LocalRuntime,
   RuntimeService,
-  textNode,
 } from '@modusoperandi/ngx-licit';
+import {
+  blankDocument,
+  blankNode,
+  textNode,
+} from '@modusoperandi/licit-tiptap/utils';
 import { MultimediaPlugin } from '@modusoperandi/licit-tiptap/plugins/multimedia';
 import { InfoIconPlugin } from '@modusoperandi/licit-tiptap/plugins/info-icon';
 import { GlossaryPlugin } from '@modusoperandi/licit-tiptap/plugins/glossary';
@@ -32,13 +35,14 @@ import { CitationPlugin } from '@modusoperandi/licit-tiptap/plugins/citation';
 import { ObjectIdPlugin } from '@modusoperandi/licit-tiptap/plugins/object-id';
 import { ExportPDFPlugin } from '@modusoperandi/licit-tiptap/plugins/export-pdf';
 import { ChangeCasePlugin } from '@modusoperandi/licit-tiptap/plugins/change-case';
-import { FloatingMenuPlugin } from '@modusoperandi/licit-tiptap/plugins/floatingmenu';
+import { FloatingMenuPlugin } from '@modusoperandi/licit-tiptap/plugins/floating-menu';
 import {
   CapcoPlugin,
   CAPCOMODE,
   SYSTEMCAPCO,
-} from '@modusoperandi/licit-capco';
+} from '@modusoperandi/licit-tiptap/plugins/capco';
 import { DocumentImporterService } from './document-importer.service';
+import type { Plugin } from 'prosemirror-state';
 
 @Component({
   selector: 'licit-root',
@@ -65,9 +69,13 @@ export class AppComponent {
   });
   protected loading = signal(false);
   protected docJsonData = computed(() => {
-    return encodeURIComponent(JSON.stringify(this.doc(), null, 4))
-  })
-  constructor(private readonly runtime: RuntimeService, private readonly importer: DocumentImporterService) {}
+    return encodeURIComponent(JSON.stringify(this.doc(), null, 4));
+  });
+  constructor(
+    private readonly localRuntime: LocalRuntime,
+    private readonly importer: DocumentImporterService
+  ) {}
+  protected runtime = new RuntimeService(this.localRuntime);
   // bug in capco plugin will lock up browser without runtime.
   dummyFloatRuntime = {
     isReadonly: false, // Need to get from KNITE
@@ -165,40 +173,56 @@ export class AppComponent {
       new CitationPlugin(),
       new ObjectIdPlugin(),
       new ChangeCasePlugin(),
-      new FloatingMenuPlugin(this.dummyFloatRuntime,
-        {}, // UrlConfig (optional)
-        ),
-    ];
+      new FloatingMenuPlugin(
+        this.dummyFloatRuntime,
+        {} // UrlConfig (optional)
+      ),
+    ] as Plugin[];
   });
 
   async importJson(file?: File) {
-    if(!file) {return}; 
+    if (!file) {
+      return;
+    }
 
     this.loading.set(true);
     try {
-      this.doc.set(await this.importer.parseJsonFile(file) as unknown as LicitDocument);
+      this.doc.set(
+        (await this.importer.parseJsonFile(file)) as unknown as LicitDocument
+      );
     } finally {
       this.loading.set(false);
     }
   }
 
   async importDocx(file?: File, type?: string) {
-    if(!file) {return}; 
+    if (!file) {
+      return;
+    }
 
     this.loading.set(true);
     try {
-      this.doc.set(await this.importer.parseDocxFile(file, type) as unknown as LicitDocument);
+      this.doc.set(
+        (await this.importer.parseDocxFile(
+          file,
+          type
+        )) as unknown as LicitDocument
+      );
     } finally {
       this.loading.set(false);
     }
   }
 
   async importFrameMaker(file?: File) {
-    if(!file) {return}; 
+    if (!file) {
+      return;
+    }
 
     this.loading.set(true);
     try {
-      this.doc.set(await this.importer.parseFMZip(file) as unknown as LicitDocument);
+      this.doc.set(
+        (await this.importer.parseFMZip(file)) as unknown as LicitDocument
+      );
     } finally {
       this.loading.set(false);
     }

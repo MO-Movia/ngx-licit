@@ -4,8 +4,8 @@
  */
 
 export { LicitEditorComponent } from './lib/editor.component';
-export { RuntimeService } from './lib/runtime.service';
 
 // Export the Licit editor wrapper and it's definitions.
 export * from './lib/models';
+export * from './lib/runtime';
 export * from './lib/utils';

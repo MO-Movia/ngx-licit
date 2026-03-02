@@ -10,9 +10,9 @@ import {
 } from '@angular/common/http/testing';
 import { RuntimeService } from './runtime.service';
 import { LoggerTestingModule } from 'ngx-logger/testing';
-import { ACRONYMS_CONTENT, GLOSSARY_CONTENT } from './models/glossary';
-import type { Style } from '@modusoperandi/licit-custom-styles/StyleRuntime';
-import type { ImageLike } from '@modusoperandi/licit';
+import { ACRONYMS_CONTENT, GLOSSARY_CONTENT } from '../models/glossary';
+import type { Style } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
+import type { ImageLike } from '@modusoperandi/licit-tiptap/licit';
 import { of, throwError } from 'rxjs';
 import type { HttpResponse } from '@angular/common/http';
 import {
