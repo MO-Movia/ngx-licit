@@ -1,0 +1,44 @@
+<div class="color-container">
+  <h5 class="cp-header-text">Select Color</h5>
+  <div class="col">
+    @for (standardColor of HeaderColors(); track standardColor) {
+      <div class="primary gap-1">
+        @for (shades of standardColor; track shades) {
+          <button class="no-button" (click)="emitSelectedColor(shades.value)">
+            <div
+              class="col gy-1 cp-clr-item"
+              [style.background-color]="shades.value"
+            ></div>
+          </button>
+        }
+      </div>
+    }
+  </div>
+  <div class="row">
+    @for (standardColor of standardColors(); track standardColor) {
+      <div class="common gap-1">
+        @for (shades of standardColor; track shades) {
+          <button class="no-button" (click)="emitSelectedColor(shades.value)">
+            <div
+              class="col gy-1 cp-clr-item"
+              [style.background-color]="shades.value"
+            ></div>
+          </button>
+        }
+      </div>
+    }
+  </div>
+  <hr class="break" />
+  <h5 class="cp-header-text">Recent Colors</h5>
+  <div class="primary gap-1">
+    @for (selectedColor of recentColors(); track selectedColor) {
+      <button class="no-button" (click)="emitSelectedColor(selectedColor)">
+        <div
+          class="cp-recent-color gy-1 cp-clr-item"
+          [style.background-color]="selectedColor"
+        ></div>
+      </button>
+    }
+  </div>
+  <hr class="break" />
+</div>

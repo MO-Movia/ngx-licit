@@ -55,7 +55,7 @@
     "@angular/platform-browser": "^19.2.14",
     "@angular/platform-browser-dynamic": "^19.2.14",
     "@angular/router": "^19.2.14",
-    "@modusoperandi/eslint-config": "^3.0.1",
+    "@modusoperandi/eslint-config": "^3.0.4",
     "@modusoperandi/licit-tiptap": ">=0.0.1",
     "@modusoperandi/color-picker": "^1.0.7",
     "@modusoperandi/licit-capco": "^1.0.0",
