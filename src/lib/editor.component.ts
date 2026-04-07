@@ -224,7 +224,9 @@ export class LicitEditorComponent implements OnDestroy {
    * @param el Host element provided by angular.
    */
   constructor() {
-    setRuntime(this.runtime);
+    effect(() => {
+      setRuntime((this.runtime() ?? null) as Record<string, unknown> | null);
+    });
     effect(() => {
       const reference = this.reference();
       if (reference) {
