@@ -416,3 +416,13 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Node
+.DS_Store
+bin
+node_modules
+.vscode/
+dist
+*.tgz
+.scannerwork
+coverage

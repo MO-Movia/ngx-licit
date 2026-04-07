@@ -1,0 +1,65 @@
+.color-container {
+  width: 96%;
+  height: 100%;
+  background: white;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+}
+
+.cp-clr-item {
+  height: 20px;
+}
+
+.cp-recent-color {
+  width: calc(100% / 9);
+}
+
+.cp-more-btn button {
+  margin: 10px;
+  width: 80px;
+  height: 32px;
+  font-weight: 600;
+}
+
+.cp-header-text {
+  font-size: 15px;
+  text-align: center;
+  margin-top: 1px;
+  padding-top: 4px;
+}
+
+.row {
+  flex-wrap: nowrap;
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  margin-top: var(--bs-gutter-y);
+}
+
+.row1 {
+  width: 22%;
+}
+.common {
+  width: 11%;
+  padding: 2px;
+}
+.primary {
+  padding-top: 4px;
+  margin-left: 2px;
+  display: flex;
+  width: 96.5%;
+}
+.break {
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+.no-button {
+  border: none;
+  cursor: pointer;
+  background: none;
+  color: inherit;
+  &:disabled {
+    cursor: default;
+  }
+}
