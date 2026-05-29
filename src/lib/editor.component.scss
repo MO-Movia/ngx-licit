@@ -3,4 +3,10 @@
   display: block;
   // Block sizing of the element is needed
   box-sizing: border-box;
+  position: relative;
+}
+
+.licit-editor__react-host {
+  width: 100%;
+  height: 100%;
 }

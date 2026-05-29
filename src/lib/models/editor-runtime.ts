@@ -22,12 +22,33 @@ import type {
   EditorRuntime as MMService,
 } from '@modusoperandi/licit-tiptap/plugins/multimedia';
 import { RecentColor } from './recent-color';
+import type {
+  LinkToolCategory,
+  LinkToolItem,
+} from '../components/link-tool';
 
 export interface EditorRuntime
   extends StyleRuntime,
     // GlossaryService,
     RCService,
-    MMService {}
+    MMService {
+  setlinkCallback?: (
+    linkcallback: (
+      link: string,
+      popupString: string,
+      applyLink?: (href?: string, linkDisplayText?: string) => void,
+      closeLinkTool?: () => void,
+      linkItems?: Record<LinkToolCategory, LinkToolItem[]>
+    ) => void
+  ) => void;
+  openLinkDialog?: (
+    link: string,
+    popupString: string,
+    applyLink?: (href?: string, linkDisplayText?: string) => void,
+    closeLinkTool?: () => void,
+    linkItems?: Record<LinkToolCategory, LinkToolItem[]>
+  ) => void;
+}
 
 export interface SimpleRuntime {
   uploadImage(blob: Blob): Promise<ImageLike>;

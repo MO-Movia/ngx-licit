@@ -13,6 +13,10 @@ import type { Style } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
 import type { ImageLike } from '@modusoperandi/licit-tiptap/plugins/multimedia';
 import { RecentColor } from '../models/recent-color';
 import { LicitNode } from '../models/licit-document';
+import type {
+  LinkToolCategory,
+  LinkToolItem,
+} from '../components/link-tool';
 
 /**
  * Provides support methods to Licit editor
@@ -20,7 +24,13 @@ import { LicitNode } from '../models/licit-document';
 export class RuntimeService implements EditorRuntime {
   canEditStyle?: boolean;
 
-  private linkcallback?: (link: string, popupString: string) => void;
+  private linkcallback?: (
+    link: string,
+    popupString: string,
+    applyLink?: (href?: string, linkDisplayText?: string) => void,
+    closeLinkTool?: () => void,
+    linkItems?: Record<LinkToolCategory, LinkToolItem[]>
+  ) => void;
   private innerLinkSectioncallback?: (sectionId: string) => void;
   private getinnerLinkSections?: (styles: string[]) => Promise<LicitNode[]>;
   private getCompleteDoc?: () => LicitNode;
@@ -54,14 +64,26 @@ export class RuntimeService implements EditorRuntime {
   }
 
   setlinkCallback(
-    linkcallback: (link: string, popupString: string) => void
+    linkcallback: (
+      link: string,
+      popupString: string,
+      applyLink?: (href?: string, linkDisplayText?: string) => void,
+      closeLinkTool?: () => void,
+      linkItems?: Record<LinkToolCategory, LinkToolItem[]>
+    ) => void
   ): void {
     this.linkcallback = linkcallback;
   }
 
-  openLinkDialog(link: string, popupString: string): void {
+  openLinkDialog(
+    link: string,
+    popupString: string,
+    applyLink?: (href?: string, linkDisplayText?: string) => void,
+    closeLinkTool?: () => void,
+    linkItems?: Record<LinkToolCategory, LinkToolItem[]>
+  ): void {
     if (this.linkcallback) {
-      this.linkcallback(link, popupString);
+      this.linkcallback(link, popupString, applyLink, closeLinkTool, linkItems);
     }
   }
 

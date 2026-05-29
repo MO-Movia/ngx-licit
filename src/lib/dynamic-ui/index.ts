@@ -3,5 +3,5 @@
  * @copyright Copyright 2026 Modus Operandi Inc. All Rights Reserved.
  */
 
-export * from './color-picker';
-export * from './link-tool';
+export * from './dynamic-component-service';
+export * from './dynamic-dialog-service';
