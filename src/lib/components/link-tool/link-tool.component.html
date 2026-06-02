@@ -108,7 +108,11 @@
             </label>
           </div>
 
-          <div class="link-tool__tree" role="tree">
+          <div
+            class="link-tool__tree"
+            [class.link-tool__tree--split-text]="shouldSplitItemText()"
+            role="tree"
+          >
             <ng-container
               *ngTemplateOutlet="treeItems; context: { $implicit: visibleItems(), level: 0 }"
             ></ng-container>
@@ -148,9 +152,9 @@
             (click)="toggleItem(item, $event)"
           ></span>
           <span class="link-tool__node-text">
-            {{ item.label }}
-            @if (item.summary) {
-              <span class="link-tool__summary">{{ item.summary }}</span>
+            <span class="link-tool__node-primary">{{ getPrimaryText(item) }}</span>
+            @if (getSummaryText(item); as summaryText) {
+              <span class="link-tool__summary">{{ summaryText }}</span>
             }
           </span>
         </button>

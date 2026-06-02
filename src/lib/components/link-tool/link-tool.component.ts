@@ -49,6 +49,7 @@ const EMPTY_LINK_ITEMS: Record<LinkToolCategory, LinkToolItem[]> = {
   tables: [],
   paragraphs: [],
 };
+const SENTENCE_BOUNDARY = /[A-Za-z)]\.\s+/;
 
 /**
  * Link tool dialog UI for external, internal, and external-document links.
@@ -185,6 +186,28 @@ export class MoLinkToolComponent {
     this.expandedItemIds.set(expandedIds);
   }
 
+  protected getPrimaryText(item: LinkToolItem): string {
+    if (item.summary || !this.shouldSplitItemText()) {
+      return item.label;
+    }
+
+    const splitIndex = this.getSentenceSplitIndex(item.label);
+    return splitIndex === -1 ? item.label : item.label.slice(0, splitIndex);
+  }
+
+  protected getSummaryText(item: LinkToolItem): string {
+    if (item.summary) {
+      return item.summary;
+    }
+
+    if (!this.shouldSplitItemText()) {
+      return '';
+    }
+
+    const splitIndex = this.getSentenceSplitIndex(item.label);
+    return splitIndex === -1 ? '' : item.label.slice(splitIndex).replace(/^\s+/, '');
+  }
+
   protected save(): void {
     if (!this.canSave()) {
       return;
@@ -210,6 +233,17 @@ export class MoLinkToolComponent {
     this.closeTool.emit();
   }
 
+  protected shouldSplitItemText(): boolean {
+    return ['toc', 'paragraphs'].includes(this.activeCategory());
+  }
+
+  private getSentenceSplitIndex(text: string): number {
+    const sentenceBoundary = SENTENCE_BOUNDARY.exec(text);
+    return sentenceBoundary
+      ? sentenceBoundary.index + sentenceBoundary[0].replace(/\s+$/, '').length
+      : -1;
+  }
+
   private filterItems(items: LinkToolItem[], query: string): LinkToolItem[] {
     const normalizedQuery = query.trim().toLowerCase();
     if (!normalizedQuery) {
@@ -221,11 +255,25 @@ export class MoLinkToolComponent {
         ? this.filterItems(item.children, normalizedQuery)
         : [];
       const itemText = `${item.label} ${item.summary ?? ''}`.toLowerCase();
-      if (itemText.includes(normalizedQuery) || children.length) {
+      if (this.matchesFilter(itemText, normalizedQuery)) {
+        filteredItems.push({ ...item });
+      } else if (children.length) {
         filteredItems.push({ ...item, children });
       }
       return filteredItems;
     }, []);
+  }
+
+  private matchesFilter(text: string, query: string): boolean {
+    if (!/\d/.test(query)) {
+      return text.includes(query);
+    }
+
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const phrasePattern = escapedQuery.replace(/\s+/g, '\\s+');
+    return new RegExp(`(^|[^a-z0-9])${phrasePattern}(?=$|[^a-z0-9])`, 'i').test(
+      text
+    );
   }
 
   private getSelectedLink(): string {

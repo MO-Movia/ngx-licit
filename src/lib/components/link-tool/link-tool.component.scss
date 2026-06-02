@@ -11,9 +11,9 @@
 .link-tool {
   --lt-bg: #1d222e;
   --lt-panel: #2c2d46;
-  --lt-border: #f3c400;
+  --lt-border: #d6aa00;
   --lt-field-border: #8d93a8;
-  --lt-save: #f3c400;
+  --lt-save: #b79213;
 
   position: relative;
   display: flex;
@@ -129,7 +129,7 @@
 
 .link-tool__input:focus {
   border-color: #c6cad7;
-  box-shadow: 0 0 0 1px rgba(243, 196, 0, 0.25);
+  box-shadow: 0 0 0 1px rgba(214, 170, 0, 0.22);
 }
 
 .link-tool__input[readonly] {
@@ -242,13 +242,14 @@
   background: transparent;
   border: 0;
   font-size: 11px;
+  font-weight: 400;
   text-align: left;
   cursor: pointer;
 }
 
 .link-tool__tree-row:hover,
 .link-tool__tree-item--selected > .link-tool__tree-row {
-  background: rgba(243, 196, 0, 0.16);
+  background: rgba(214, 218, 228, 0.22);
 }
 
 .link-tool__caret {
@@ -295,14 +296,14 @@
   white-space: nowrap;
 }
 
-.link-tool__tree-item--parent > .link-tool__tree-row .link-tool__node-text {
+.link-tool__tree--split-text .link-tool__node-primary {
   font-weight: 700;
 }
 
 .link-tool__summary {
   margin-left: 4px;
-  color: #f3f4f8;
-  font-weight: 400;
+  color: #d8dbe7;
+  font-weight: 400 !important;
 }
 
 .link-tool__footer {
