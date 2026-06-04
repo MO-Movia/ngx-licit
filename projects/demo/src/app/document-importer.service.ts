@@ -50,9 +50,14 @@ export class DocumentImporterService {
     const elements = await parseFrameMakerHTM5Zip(file, (f) =>
       toBase64DataUrl(f),
     );
-
-    const doc = new LicitConverter(asTransformConfig(config)).parseFrameMakerHTML5(elements);
-     return removeEmptyParagraphFromJSON(doc);
+ 
+    const doc = new LicitConverter(
+      asTransformConfig(config)
+    ).parseFrameMakerHTML5(elements);
+    if (!doc) {
+      throw new Error('Unable to parse FrameMaker HTML5 zip.');
+    }
+    return removeEmptyParagraphFromJSON(doc);
   }
 
   public async parseJsonFile(file: File): Promise<LicitDocumentJSON> {
