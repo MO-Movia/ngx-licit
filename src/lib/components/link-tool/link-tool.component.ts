@@ -105,7 +105,14 @@ export class MoLinkToolComponent {
 
   constructor() {
     effect(() => {
-      this.externalUrl.set(this.initialUrl());
+      const initialUrl = this.initialUrl();
+      if (this.isSameDocumentLink(initialUrl)) {
+        this.activeTab.set('within-document');
+        this.externalUrl.set('');
+        return;
+      }
+
+      this.externalUrl.set(initialUrl);
     });
     effect(() => {
       this.editableHighlightedText.set(this.highlightedText());
@@ -114,6 +121,20 @@ export class MoLinkToolComponent {
       this.expandedItemIds.set(
         new Set(this.linkItems()[this.activeCategory()].map((item) => item.id))
       );
+    });
+    effect(() => {
+      const initialUrl = this.initialUrl();
+      if (!this.isSameDocumentLink(initialUrl)) {
+        return;
+      }
+
+      const selectedLink = this.findLinkItem(initialUrl);
+      if (!selectedLink) {
+        return;
+      }
+
+      this.activeCategory.set(selectedLink.category);
+      this.selectedItem.set(selectedLink.item);
     });
   }
 
@@ -205,7 +226,9 @@ export class MoLinkToolComponent {
     }
 
     const splitIndex = this.getSentenceSplitIndex(item.label);
-    return splitIndex === -1 ? '' : item.label.slice(splitIndex).replace(/^\s+/, '');
+    return splitIndex === -1
+      ? ''
+      : item.label.slice(splitIndex).replace(/^\s+/, '');
   }
 
   protected save(): void {
@@ -225,7 +248,9 @@ export class MoLinkToolComponent {
           : undefined,
       target: this.selectedItem(),
       category:
-        this.activeTab() === 'external-reference' ? undefined : this.activeCategory(),
+        this.activeTab() === 'external-reference'
+          ? undefined
+          : this.activeCategory(),
     });
   }
 
@@ -265,15 +290,7 @@ export class MoLinkToolComponent {
   }
 
   private matchesFilter(text: string, query: string): boolean {
-    if (!/\d/.test(query)) {
-      return text.includes(query);
-    }
-
-    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const phrasePattern = escapedQuery.replace(/\s+/g, '\\s+');
-    return new RegExp(`(^|[^a-z0-9])${phrasePattern}(?=$|[^a-z0-9])`, 'i').test(
-      text
-    );
+    return text.includes(query);
   }
 
   private getSelectedLink(): string {
@@ -281,6 +298,43 @@ export class MoLinkToolComponent {
       return this.externalUrl().trim();
     }
     return this.selectedItem()?.id ?? '';
+  }
+
+  private isSameDocumentLink(link: string): boolean {
+    return link.trim().startsWith('#');
+  }
+
+  private findLinkItem(
+    link: string
+  ): { category: LinkToolCategory; item: LinkToolItem } | undefined {
+    for (const category of this.categories) {
+      const item = this.findItemById(this.linkItems()[category.id], link);
+      if (item) {
+        return { category: category.id, item };
+      }
+    }
+
+    return undefined;
+  }
+
+  private findItemById(
+    items: LinkToolItem[],
+    itemId: string
+  ): LinkToolItem | undefined {
+    for (const item of items) {
+      if (item.id === itemId) {
+        return item;
+      }
+
+      const child = item.children
+        ? this.findItemById(item.children, itemId)
+        : undefined;
+      if (child) {
+        return child;
+      }
+    }
+
+    return undefined;
   }
 
 }
