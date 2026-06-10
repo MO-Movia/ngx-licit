@@ -16,6 +16,10 @@ const COLORS_KEY = 'COLORS_CACHE';
 
 @Injectable({ providedIn: 'root' })
 export class LocalRuntime implements SimpleRuntime {
+  canEditStyles(): boolean {
+    return true;
+  }
+
   client = inject(HttpClient, { optional: true });
   getProxyImageSrc(src: string): Promise<string> {
     if (this.client) {

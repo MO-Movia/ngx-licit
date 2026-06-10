@@ -214,7 +214,7 @@ export class LicitEditorComponent implements OnDestroy {
   }));
   //#endregion
 
-  readonly runtime = input<EditorRuntime>();
+  readonly runtime = input.required<EditorRuntime>();
   private readonly el = inject(ElementRef);
 
   /**
@@ -225,7 +225,7 @@ export class LicitEditorComponent implements OnDestroy {
    */
   constructor() {
     effect(() => {
-      setRuntime((this.runtime() ?? null) as Record<string, unknown> | null);
+      setRuntime(this.runtime());
     });
     effect(() => {
       const reference = this.reference();

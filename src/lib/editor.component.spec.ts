@@ -5,41 +5,26 @@
 
 import type { ComponentFixture } from '@angular/core/testing';
 import { TestBed } from '@angular/core/testing';
-import { EditorComponent } from './editor.component';
-import { RuntimeService } from './runtime.service';
-import { Mock } from 'ts-mocks';
-import type { LicitDocument } from './models/licit-document';
-import type { Style } from '@modusoperandi/licit-custom-styles/StyleRuntime';
-import type { Licit } from '@modusoperandi/licit';
+import { LicitEditorComponent } from './editor.component';
+import { RuntimeService } from './runtime/runtime.service';
+import { MockService } from 'ng-mocks';
+import { LicitHandle } from '@modusoperandi/licit-tiptap/licit';
 
 describe('EditorComponent', () => {
-  let component: EditorComponent;
-  let fixture: ComponentFixture<EditorComponent>;
-  let runtime: Mock<RuntimeService>;
+  let component: LicitEditorComponent;
+  let fixture: ComponentFixture<LicitEditorComponent>;
 
   beforeEach(async () => {
-    // create fake runtime service
-    runtime = new Mock<RuntimeService>({
-      canProxyImageSrc: () => false,
-      canUploadImage: () => false,
-      getStylesAsync: async (): Promise<Style[]> => await Promise.resolve([]),
-      // requirement to launch editor version 0.1.1
-      fetchStyles: async (): Promise<Style[]> => await Promise.resolve([]),
-      saveStyle: async (): Promise<Style> =>
-        (await Promise.resolve({})) as Style, // bug in styles if undefined
-    });
-
     await TestBed.configureTestingModule({
-      imports: [EditorComponent],
-      providers: [
-        { provide: RuntimeService, useFactory: () => runtime.Object },
-      ],
+      imports: [LicitEditorComponent],
+      providers: [],
     }).compileComponents();
-    fixture = TestBed.createComponent(EditorComponent);
+    fixture = TestBed.createComponent(LicitEditorComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('runtime', MockService(RuntimeService));
     fixture.componentRef.setInput('doc', {
       type: 'doc',
-    } as LicitDocument);
+    });
     fixture.componentRef.setInput('docType', 'doc');
     fixture.componentRef.setInput('repair', true);
     fixture.detectChanges();
@@ -47,28 +32,43 @@ describe('EditorComponent', () => {
 
   it('should onComponentClick', () => {
     fixture.detectChanges();
-    const spy = jasmine.createSpy();
+    const spy = vi.fn();
     component.licit = {
       goToEnd: spy,
-    } as unknown as Licit;
-    const mock = jasmine.createSpy();
-    mock.and.returnValues(false, true);
-    component['onComponentClick']({ closest: mock } as unknown as HTMLElement);
+    } as unknown as LicitHandle;
+    const element = document.createElement('div');
+    const mock = vi.fn();
+    mock.mockReturnValueOnce(false).mockReturnValueOnce(true);
+    element.closest = mock;
+    component['onComponentClick'](element);
     expect(spy).toHaveBeenCalled();
   });
 
   it('should not onComponentClick', () => {
-    const spy = jasmine.createSpy();
+    const spy = vi.fn();
     component.licit = {
       goToEnd: spy,
-    } as unknown as Licit;
-    const mock = jasmine.createSpy();
-    mock.and.returnValues(true, true);
-    component['onComponentClick']({ closest: mock } as unknown as HTMLElement);
-    mock.and.returnValues(true, false);
-    component['onComponentClick']({ closest: mock } as unknown as HTMLElement);
-    mock.and.returnValues(false, false);
-    component['onComponentClick']({ closest: mock } as unknown as HTMLElement);
+    } as unknown as LicitHandle;
+    const mock = vi.fn();
+
+    // Case 1: closest(EDITOR) returns true (inside editor)
+    const element1 = document.createElement('div');
+    element1.closest = mock;
+    mock.mockReturnValueOnce(true).mockReturnValueOnce(true);
+    component['onComponentClick'](element1);
+
+    // Case 2: closest(FRAME) returns false (outside frame)
+    const element2 = document.createElement('div');
+    element2.closest = mock;
+    mock.mockReturnValueOnce(true).mockReturnValueOnce(false);
+    component['onComponentClick'](element2);
+
+    // Case 3: both closest return false
+    const element3 = document.createElement('div');
+    element3.closest = mock;
+    mock.mockReturnValueOnce(false).mockReturnValueOnce(false);
+    component['onComponentClick'](element3);
+
     expect(spy).not.toHaveBeenCalled();
   });
 
@@ -77,7 +77,7 @@ describe('EditorComponent', () => {
     fixture.componentRef.setInput('repair', false);
     fixture.componentRef.setInput('reference', {});
     fixture.detectChanges();
-    component['props']().onChange?.({} as LicitDocument, true);
+    component['props']().onChange?.({}, true, undefined!);
     component['props']().onReady?.(null!);
     expect(component['props']()).toBeDefined();
   });
@@ -87,8 +87,8 @@ describe('EditorComponent', () => {
   });
 
   it('should handle unload', () => {
-    const isDirty = spyOn(fixture.componentRef.instance, 'isDirty');
-    isDirty.and.returnValue(false);
+    const isDirty = vi.spyOn(fixture.componentRef.instance, 'isDirty');
+    isDirty.mockReturnValue(false);
     fixture.componentRef.setInput('saved', true);
     fixture.componentRef.setInput('readOnly', true);
     fixture.detectChanges();
@@ -106,7 +106,7 @@ describe('EditorComponent', () => {
 
     fixture.componentRef.setInput('saved', undefined);
     fixture.componentRef.setInput('readOnly', false);
-    isDirty.and.returnValue(true);
+    isDirty.mockReturnValue(true);
     fixture.detectChanges();
     expect(component['beforeUnloadHander'](new Event('fum'))).toBeTruthy();
   });
