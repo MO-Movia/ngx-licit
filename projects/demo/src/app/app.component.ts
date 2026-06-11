@@ -10,6 +10,7 @@ import {
   model,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { EnhancedTableFigure } from '@modusoperandi/licit-tiptap/plugins/block-control';
 import { LicitHighlightTextPlugin } from '@modusoperandi/licit-tiptap/plugins/highlight';
 import {
@@ -47,11 +48,12 @@ import type { Plugin } from 'prosemirror-state';
 @Component({
   selector: 'licit-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LicitEditorComponent],
+  imports: [LicitEditorComponent, FormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
+  protected readonly ro = model<boolean>(false);
   title = 'demo';
   doc = model<LicitDocument>({
     ...blankDocument(

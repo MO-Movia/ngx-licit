@@ -37,6 +37,13 @@
       [href]="'data:text/plain;charset=utf-8, ' + docJsonData()"
       ><button>Export</button></a
     >
+    <input id="ro" type="checkbox" [(ngModel)]="ro"/> <label for="ro">
+      @if (ro()) {
+        Read Only
+      } @else {
+        Editor
+      }
+    </label>
   </div>
   <licit-editor
     [doc]="doc()"
@@ -45,7 +52,7 @@
     [debug]="true"
     [docID]="''"
     [embedded]="false"
-    [readOnly]="false"
+    [readOnly]="ro()"
     [theme]="'dark'"
     [plugins]="getPlugins()"
     [docType]="'demo'"
