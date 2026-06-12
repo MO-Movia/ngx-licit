@@ -10,6 +10,7 @@ import {
   model,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { EnhancedTableFigure } from '@modusoperandi/licit-tiptap/plugins/block-control';
 import { LicitHighlightTextPlugin } from '@modusoperandi/licit-tiptap/plugins/highlight';
 import {
@@ -17,7 +18,7 @@ import {
   LicitEditorComponent,
   LocalRuntime,
   RuntimeService,
-} from '@modusoperandi/ngx-licit';
+} from '../../../../src/public-api';
 import {
   blankDocument,
   blankNode,
@@ -47,11 +48,12 @@ import type { Plugin } from 'prosemirror-state';
 @Component({
   selector: 'licit-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LicitEditorComponent],
+  imports: [LicitEditorComponent, FormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
+  protected readonly ro = model<boolean>(false);
   title = 'demo';
   doc = model<LicitDocument>({
     ...blankDocument(
@@ -76,26 +78,21 @@ export class AppComponent {
     private readonly importer: DocumentImporterService
   ) {}
   protected runtime = new RuntimeService(this.localRuntime);
-  // bug in capco plugin will lock up browser without runtime.
   dummyFloatRuntime = {
-    isReadonly: false, // Need to get from KNITE
-    createSlice: async (slice: any) => {
-      return {
+    isReadonly: false,
+    createSlice: (slice: { id?: string; ids?: string[] }) =>
+      Promise.resolve({
         name: 'asd',
-        description:'asdffggg',
+        description: 'asdffggg',
         id: slice?.id ?? 'dummy-slice-id',
-        referenceType:'type',
-        source:'source',
-        from:'from',
-        to:'to',
+        referenceType: 'type',
+        source: 'source',
+        from: 'from',
+        to: 'to',
         ids: slice?.ids ?? ['id1', 'id2'],
+      }),
 
-      };
-    },
-
-    retrieveSlices: async () => {
-      return [];
-    },
+    retrieveSlices: () => Promise.resolve([]),
 
     insertInfoIconFloat: () => {
       // no-op
@@ -105,19 +102,17 @@ export class AppComponent {
       // no-op
     },
 
-    insertReference: async () => {
-      return  {
+    insertReference: () =>
+      Promise.resolve({
         name: 'asd',
-        description:'asdffggg',
-        id:   'dummy-slice-id',
-        referenceType:'type',
-        source:'source',
-        from:'from',
-        to:'to',
-        ids:   ['id1', 'id2'],
-
-      };
-    },
+        description: 'asdffggg',
+        id: 'dummy-slice-id',
+        referenceType: 'type',
+        source: 'source',
+        from: 'from',
+        to: 'to',
+        ids: ['id1', 'id2'],
+      }),
   };
   floatingMenuHandlers = {
     enableCitationAndComment: () => true,
@@ -126,17 +121,17 @@ export class AppComponent {
     enablePaste: () => true,
     enablePasteAsReference: () => true,
 
-    addComment: () => console.log('Add Comment'),
-    addTag: () => console.log('Add Tag'),
-    createCitation: () => console.log('Create Citation'),
-    createInfoIcon: () => console.log('Create Infoicon'),
-    copyRich: () => console.log('Copy'),
-    copyPlain: () => console.log('Copy Plain'),
-    paste: () => console.log('Paste'),
-    pastePlain: () => console.log('Paste Plain'),
-    pasteAsReference: () => console.log('Paste As Reference'),
-    createSlice: () => console.log('Create Referent'),
-    showReferences: () => console.log('Insert Reference'),
+    addComment: () => console.warn('Add Comment'),
+    addTag: () => console.warn('Add Tag'),
+    createCitation: () => console.warn('Create Citation'),
+    createInfoIcon: () => console.warn('Create Infoicon'),
+    copyRich: () => console.warn('Copy'),
+    copyPlain: () => console.warn('Copy Plain'),
+    paste: () => console.warn('Paste'),
+    pastePlain: () => console.warn('Paste Plain'),
+    pasteAsReference: () => console.warn('Paste As Reference'),
+    createSlice: () => console.warn('Create Referent'),
+    showReferences: () => console.warn('Insert Reference'),
   };
 
   getPlugins = computed(() => {

@@ -17,11 +17,9 @@ import type {
 } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
 // import type { GlossaryService } from '@modusoperandi/licit-tiptap/plugins/glossary'
 import type { EditorRuntime as RCService } from '@modusoperandi/licit-tiptap/plugins/copy-images';
-import type {
-  ImageLike,
-  EditorRuntime as MMService,
-} from '@modusoperandi/licit-tiptap/plugins/multimedia';
+import type { EditorRuntime as MMService } from '@modusoperandi/licit-tiptap/plugins/multimedia';
 import { RecentColor } from './recent-color';
+import type { LicitNode } from './licit-document';
 
 export interface EditorRuntime
   extends StyleRuntime,
@@ -30,12 +28,17 @@ export interface EditorRuntime
     MMService {}
 
 export interface SimpleRuntime {
-  uploadImage(blob: Blob): Promise<ImageLike>;
+  uploadImage(blob: Blob): Promise<{ src: string }>;
   getProxyImageSrc(src: string): Promise<string>;
   getVideoSrc(id: string): Promise<string>;
-  uploadVideo(blob: Blob): Promise<ImageLike>;
+  uploadVideo(blob: Blob): Promise<{ src: string }>;
   saveStyles(styles: Style[]): Promise<Style[]>;
   saveColors(colors: RecentColor[]): Promise<RecentColor[]>;
+  canEditStyles(): boolean;
   getStyles(): Promise<Style[]>;
   getColors(): Promise<RecentColor[]>;
+  openLinkDialog?: (link: string, popupString: string) => void;
+  goToInnerLinkSection?: (sectionId: string) => void;
+  getInnerLinkSections?: (styles: string[]) => Promise<LicitNode[]>;
+  getCompleteDoc?: () => LicitNode;
 }

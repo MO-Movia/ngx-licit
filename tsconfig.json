@@ -13,16 +13,8 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
     "useDefineForClassFields": false,
-    "paths": {
-      "@modusoperandi/ngx-licit": [
-        "./src/public-api.ts"
-      ]
-    }
+    "types": ["vitest/globals"]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

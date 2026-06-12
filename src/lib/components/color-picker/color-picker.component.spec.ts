@@ -69,7 +69,7 @@ describe('MoColorPickerComponent', () => {
   });
 
   it('should emit the selected color', () => {
-    spyOn(component.selectedColorChanged, 'emit');
+    vi.spyOn(component.selectedColorChanged, 'emit');
     component['emitSelectedColor']('#FFFF00');
     expect(component.selectedColorChanged.emit).toHaveBeenCalledWith('#FFFF00');
   });
