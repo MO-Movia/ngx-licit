@@ -4,24 +4,16 @@
     "outDir": "./out-tsc/lib",
     "declarationMap": true,
     "declaration": true,
-    "inlineSources": true,
-    "types": [],
-    "lib": [
-      "dom",
-      "es2018"
-    ]
+    "inlineSources": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "skipTemplateCodegen": true,
-    "strictTemplates": true, 
-    "strictInjectionParameters": true, 
+    "strictTemplates": true,
+    "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictMetadataEmit": true,
     "enableResourceInlining": true
   },
-  "exclude": [
-    "src/test.ts",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["src/test.ts", "**/*.spec.ts"]
 }

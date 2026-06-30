@@ -10,7 +10,6 @@ import {
   Glossary,
 } from '../models/glossary';
 import type { Style } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
-import type { ImageLike } from '@modusoperandi/licit-tiptap/plugins/multimedia';
 import { RecentColor } from '../models/recent-color';
 import { LicitNode } from '../models/licit-document';
 import type {
@@ -44,6 +43,7 @@ export class RuntimeService implements EditorRuntime {
   constructor(private readonly api: SimpleRuntime) {
     // this-bind all runtime methods because the editor doesn't maintain 'this'
     // when calling events.
+    this.canEditStyle = api.canEditStyles();
     this.canUploadImage = this.canUploadImage.bind(this);
     this.uploadImage = this.uploadImage.bind(this);
     this.canUploadVideo = this.canUploadVideo.bind(this);
@@ -92,31 +92,15 @@ export class RuntimeService implements EditorRuntime {
   }
 
   goToInnerLinkSection(sectionId: string): void {
-    this.innerLinkSectioncallback?.(sectionId);
-  }
-
-  getInnerLinkSelectionIds(
-    getAllSelectionId: (styles: string[]) => Promise<LicitNode[]>
-  ) {
-    this.getinnerLinkSections = getAllSelectionId;
+    this.api.goToInnerLinkSection?.(sectionId);
   }
 
   fetchInnerLinkSelectionIds(styles: string[]): Promise<LicitNode[]> {
-    if (this.getinnerLinkSections) {
-      return this.getinnerLinkSections(styles);
-    }
-    return Promise.resolve([]);
-  }
-
-  getDocFunc(getFullDoc: () => LicitNode) {
-    this.getCompleteDoc = getFullDoc;
+    return this.api.getInnerLinkSections?.(styles) ?? Promise.resolve([]);
   }
 
   fetchCompleteDoc(): LicitNode {
-    if (this.getCompleteDoc) {
-      return this.getCompleteDoc();
-    }
-    return {} as unknown as LicitNode;
+    return this.api.getCompleteDoc?.() ?? ({} as unknown as LicitNode);
   }
 
   /**
@@ -150,7 +134,7 @@ export class RuntimeService implements EditorRuntime {
    *
    * @param file: File to upload.
    */
-  uploadImage(blob: Blob): Promise<ImageLike> {
+  uploadImage(blob: Blob): Promise<{ src: string }> {
     return this.api.uploadImage(blob);
   }
 
@@ -186,7 +170,7 @@ export class RuntimeService implements EditorRuntime {
    *
    * @param blob: blob to upload.
    */
-  async uploadVideo(blob: File): Promise<ImageLike> {
+  async uploadVideo(blob: File): Promise<{ src: string }> {
     return this.api.uploadVideo(blob);
   }
   /**

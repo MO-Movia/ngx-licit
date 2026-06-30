@@ -426,3 +426,5 @@ dist
 *.tgz
 .scannerwork
 coverage
+test-reports
+.angular

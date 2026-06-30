@@ -229,7 +229,6 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
   }));
   //#endregion
 
-  readonly runtime = input<EditorRuntime>();
   private applyLinkFromTool?: (
     href?: string,
     linkDisplayText?: string
@@ -239,6 +238,8 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
   private linkToolSubscriptions: OutputRefSubscription[] = [];
   private readonly ngZone = inject(NgZone);
   private readonly dialogService = inject(DynamicDialogService);
+  readonly runtime = input.required<EditorRuntime>();
+  private readonly el = inject(ElementRef);
 
   /**
    * Instances get constructed by angular
@@ -262,7 +263,7 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
           });
         }
       );
-      setRuntime((runtime ?? null) as Record<string, unknown> | null);
+      setRuntime(runtime);
     });
     effect(() => {
       const reference = this.reference();

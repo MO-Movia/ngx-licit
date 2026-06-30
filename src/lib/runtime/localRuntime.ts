@@ -3,11 +3,9 @@
  * @copyright Copyright 2026 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { SimpleRuntime } from '../models/editor-runtime';
 import { RecentColor } from '../models/recent-color';
-import { firstValueFrom } from 'rxjs';
 import type { Style } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
 import type { ImageLike } from '@modusoperandi/licit-tiptap/plugins/multimedia';
 
@@ -16,12 +14,11 @@ const COLORS_KEY = 'COLORS_CACHE';
 
 @Injectable({ providedIn: 'root' })
 export class LocalRuntime implements SimpleRuntime {
-  client = inject(HttpClient, { optional: true });
-  getProxyImageSrc(src: string): Promise<string> {
-    if (this.client) {
-      return firstValueFrom(this.client.get<string>(src));
-    }
+  canEditStyles(): boolean {
+    return true;
+  }
 
+  getProxyImageSrc(src: string): Promise<string> {
     return Promise.resolve(src);
   }
 
@@ -59,20 +56,24 @@ export class LocalRuntime implements SimpleRuntime {
   }
 
   async uploadVideo(blob: Blob): Promise<ImageLike> {
-    const image = await new Promise<ImageLike>((resolve, reject) => {
-      const videoEle = document.createElement('video');
-      videoEle.src = URL.createObjectURL(blob);
+    return this.processVideo(blob, undefined);
+  }
 
+  private async processVideo(blob: Blob, videoEle: HTMLVideoElement | undefined): Promise<ImageLike> {
+    videoEle ??= document.createElement('video');
+    const image = await new Promise<ImageLike>((resolve, reject) => {
+      const src = URL.createObjectURL(blob);
       videoEle.addEventListener('error', () =>
         reject(new Error('Failed to load video'))
       );
       videoEle.addEventListener('loadedmetadata', () => {
         resolve({
-          id: Date.now().toString(),
+          id: crypto.randomUUID(),
           width: videoEle.width,
           height: videoEle.height,
-          src: videoEle.src,
+          src,
         });
+      videoEle.src = src;
       });
     });
     this.videoCache[image.id] = image;
