@@ -19,13 +19,34 @@ import type {
 import type { EditorRuntime as RCService } from '@modusoperandi/licit-tiptap/plugins/copy-images';
 import type { EditorRuntime as MMService } from '@modusoperandi/licit-tiptap/plugins/multimedia';
 import { RecentColor } from './recent-color';
+import type {
+  LinkToolCategory,
+  LinkToolItem,
+} from '../components/link-tool';
 import type { LicitNode } from './licit-document';
 
 export interface EditorRuntime
   extends StyleRuntime,
     // GlossaryService,
     RCService,
-    MMService {}
+    MMService {
+  setlinkCallback?: (
+    linkcallback: (
+      link: string,
+      popupString: string,
+      applyLink?: (href?: string, linkDisplayText?: string) => void,
+      closeLinkTool?: () => void,
+      linkItems?: Record<LinkToolCategory, LinkToolItem[]>
+    ) => void
+  ) => void;
+  openLinkDialog?: (
+    link: string,
+    popupString: string,
+    applyLink?: (href?: string, linkDisplayText?: string) => void,
+    closeLinkTool?: () => void,
+    linkItems?: Record<LinkToolCategory, LinkToolItem[]>
+  ) => void;
+}
 
 export interface SimpleRuntime {
   uploadImage(blob: Blob): Promise<{ src: string }>;

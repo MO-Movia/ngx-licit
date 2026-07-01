@@ -1,0 +1,173 @@
+<section class="link-tool" aria-label="Link Tool">
+  <header class="link-tool__header">
+    <h2>Link Tool</h2>
+    <button class="link-tool__close" type="button" aria-label="Close link tool" (click)="close()">
+      x
+    </button>
+  </header>
+
+  <nav class="link-tool__tabs" aria-label="Link target type">
+    @for (tab of tabs; track tab.id) {
+      <button
+        type="button"
+        class="link-tool__tab"
+        [class.link-tool__tab--active]="activeTab() === tab.id"
+        [disabled]="tab.disabled"
+        (click)="selectTab(tab.id)"
+      >
+        {{ tab.label }}
+      </button>
+    }
+  </nav>
+
+  @if (activeTab() === 'external-reference') {
+    <div class="link-tool__content link-tool__content--external">
+      <label class="link-tool__field link-tool__field--stacked">
+        <span>Highlighted text:</span>
+        <input
+          class="link-tool__input"
+          type="text"
+          [ngModel]="editableHighlightedText()"
+          (ngModelChange)="editableHighlightedText.set($event)"
+        />
+      </label>
+
+      <label class="link-tool__field link-tool__field--stacked">
+        <span>Paste the URL<br />to apply here:</span>
+        <input
+          class="link-tool__input link-tool__input--url"
+          type="url"
+          [ngModel]="externalUrl()"
+          (ngModelChange)="externalUrl.set($event)"
+        />
+      </label>
+    </div>
+  } @else {
+    <div class="link-tool__content link-tool__content--browser">
+      <label class="link-tool__document-row">
+        <span>Highlighted text:</span>
+        <input
+          class="link-tool__input"
+          type="text"
+          [ngModel]="editableHighlightedText()"
+          (ngModelChange)="editableHighlightedText.set($event)"
+        />
+      </label>
+
+      @if (activeTab() === 'within-external-document') {
+        <label class="link-tool__document-row">
+          <span>Document:</span>
+          <select
+            class="link-tool__input link-tool__select"
+            [ngModel]="selectedDocument()?.id ?? ''"
+            (ngModelChange)="selectDocument($event)"
+          >
+            <option value=""></option>
+            @for (document of documents(); track document.id) {
+              <option [value]="document.id">{{ document.title }}</option>
+            }
+          </select>
+        </label>
+      } @else {
+        <label class="link-tool__document-row">
+          <span>Document:</span>
+          <input
+            class="link-tool__input"
+            type="text"
+            [ngModel]="documentFilter()"
+            (ngModelChange)="documentFilter.set($event)"
+          />
+        </label>
+      }
+
+      <div class="link-tool__browser">
+        <aside class="link-tool__side-tabs" aria-label="Available link categories">
+          @for (category of categories; track category.id) {
+            <button
+              type="button"
+              class="link-tool__side-tab"
+              [class.link-tool__side-tab--active]="activeCategory() === category.id"
+              (click)="selectCategory(category.id)"
+            >
+              {{ category.label }}
+            </button>
+          }
+        </aside>
+
+        <section class="link-tool__list-panel">
+          <div class="link-tool__filter-row">
+            <span>Available links</span>
+            <label>
+              Filter:
+              <input
+                class="link-tool__input link-tool__filter"
+                type="text"
+                [ngModel]="itemFilter()"
+                (ngModelChange)="itemFilter.set($event)"
+              />
+            </label>
+          </div>
+
+          <div
+            class="link-tool__tree"
+            [class.link-tool__tree--split-text]="shouldSplitItemText()"
+            role="tree"
+          >
+            <ng-container
+              *ngTemplateOutlet="treeItems; context: { $implicit: visibleItems(), level: 0 }"
+            ></ng-container>
+          </div>
+        </section>
+      </div>
+    </div>
+  }
+
+  <footer class="link-tool__footer">
+    <button class="link-tool__save" type="button" [disabled]="!canSave()" (click)="save()">
+      Save
+    </button>
+  </footer>
+</section>
+
+<ng-template #treeItems let-items let-level="level">
+  <ul class="link-tool__tree-list" [style.--tree-level]="level">
+    @for (item of items; track item.id) {
+      <li
+        class="link-tool__tree-item"
+        [class.link-tool__tree-item--selected]="selectedItem()?.id === item.id"
+        [class.link-tool__tree-item--parent]="(item.children?.length ?? 0) > 0"
+      >
+        <button
+          type="button"
+          class="link-tool__tree-row"
+          role="treeitem"
+          [attr.aria-selected]="selectedItem()?.id === item.id"
+          [attr.aria-expanded]="item.children?.length ? isExpanded(item) : null"
+          (click)="selectItem(item)"
+        >
+          <span
+            class="link-tool__caret"
+            [class.link-tool__caret--expanded]="isExpanded(item)"
+            [class.link-tool__caret--empty]="!item.children?.length"
+            (click)="toggleItem(item, $event)"
+          ></span>
+          <span class="link-tool__node-text">
+            <span class="link-tool__node-primary">{{ getPrimaryText(item) }}</span>
+            @if (getSummaryText(item); as summaryText) {
+              <span class="link-tool__summary">{{ summaryText }}</span>
+            }
+          </span>
+        </button>
+
+        @if (item.children?.length && isExpanded(item)) {
+          <ng-container
+            *ngTemplateOutlet="
+              treeItems;
+              context: { $implicit: item.children ?? [], level: level + 1 }
+            "
+          ></ng-container>
+        }
+      </li>
+    }
+  </ul>
+</ng-template>

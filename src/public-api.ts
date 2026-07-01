@@ -6,6 +6,8 @@
 export { LicitEditorComponent } from './lib/editor.component';
 
 // Export the Licit editor wrapper and it's definitions.
+export * from './lib/components';
+export * from './lib/dynamic-ui';
 export * from './lib/models';
 export * from './lib/runtime';
 export * from './lib/utils';

@@ -5,16 +5,20 @@
 
 import {
   ElementRef,
+  AfterViewInit,
   OnDestroy,
   Component,
   HostListener,
   ChangeDetectionStrategy,
+  NgZone,
   computed,
   input,
   output,
   effect,
+  ViewChild,
   inject,
 } from '@angular/core';
+import type { ComponentRef, OutputRefSubscription } from '@angular/core';
 
 // React stuff
 import ReactDOM from 'react-dom/client';
@@ -32,6 +36,13 @@ import { JSONContent } from '@tiptap/core';
 import { Plugin } from '@tiptap/pm/state';
 import React from 'react';
 import { EditorRuntime } from './models/editor-runtime';
+import {
+  LinkToolCategory,
+  LinkToolItem,
+  LinkToolSaveEvent,
+  MoLinkToolComponent,
+} from './components/link-tool';
+import { DynamicDialogService } from './dynamic-ui';
 
 /**
  * Default behavior is to fill area
@@ -52,16 +63,20 @@ export const FRAME = '.czi-editor-frame-body';
  */
 @Component({
   selector: 'licit-editor',
-  template: '',
+  template: `
+    <div #reactHost class="licit-editor__react-host"></div>
+  `,
   styleUrls: ['./editor.component.scss'],
   // Changes from here down are handled by React
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LicitEditorComponent implements OnDestroy {
+export class LicitEditorComponent implements AfterViewInit, OnDestroy {
   /**
    * host for Licit (React) component
    */
-  private root!: ReactDOM.Root;
+  private root?: ReactDOM.Root;
+  @ViewChild('reactHost', { static: true })
+  private reactHost!: ElementRef<HTMLElement>;
 
   /**
    * Contains the current editor instance.
@@ -214,6 +229,15 @@ export class LicitEditorComponent implements OnDestroy {
   }));
   //#endregion
 
+  private applyLinkFromTool?: (
+    href?: string,
+    linkDisplayText?: string
+  ) => void;
+  private closeLinkToolCallback?: () => void;
+  private linkToolRef?: ComponentRef<MoLinkToolComponent>;
+  private linkToolSubscriptions: OutputRefSubscription[] = [];
+  private readonly ngZone = inject(NgZone);
+  private readonly dialogService = inject(DynamicDialogService);
   readonly runtime = input.required<EditorRuntime>();
   private readonly el = inject(ElementRef);
 
@@ -225,7 +249,21 @@ export class LicitEditorComponent implements OnDestroy {
    */
   constructor() {
     effect(() => {
-      setRuntime(this.runtime());
+      const runtime = this.runtime();
+      runtime?.setlinkCallback?.(
+        (link, popupString, applyLink, closeLinkTool, linkItems) => {
+          this.ngZone.run(() => {
+            this.openLinkTool(
+              link,
+              popupString,
+              applyLink,
+              closeLinkTool,
+              linkItems
+            );
+          });
+        }
+      );
+      setRuntime(runtime);
     });
     effect(() => {
       const reference = this.reference();
@@ -234,24 +272,100 @@ export class LicitEditorComponent implements OnDestroy {
       }
     });
     effect(() => {
-      this.root?.unmount();
-      // props are frozen by react, need to recreate. Reuse the root so React state persists.
-      this.root = ReactDOM.createRoot(this.el.nativeElement);
-      this.root.render(
-        React.createElement(
-          React.StrictMode,
-          null,
-          React.createElement(Licit, this.props())
-        )
-      );
+      this.renderLicit(true);
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.renderLicit(true);
+  }
+
+  private renderLicit(recreateRoot = false): void {
+    const props = this.props();
+
+    if (!this.reactHost?.nativeElement) {
+      return;
+    }
+
+    if (recreateRoot) {
+      this.root?.unmount();
+      this.root = ReactDOM.createRoot(this.reactHost.nativeElement);
+    }
+
+    this.root?.render(
+      React.createElement(
+        React.StrictMode,
+        null,
+        React.createElement(Licit, props)
+      )
+    );
+  }
+
+  protected closeLinkTool(): void {
+    this.dialogService.close();
+  }
+
+  private finalizeLinkTool(): void {
+    this.linkToolSubscriptions.forEach((subscription) =>
+      subscription.unsubscribe()
+    );
+    this.linkToolSubscriptions = [];
+    this.linkToolRef = undefined;
+    this.applyLinkFromTool = undefined;
+    const closeLinkToolCallback = this.closeLinkToolCallback;
+    this.closeLinkToolCallback = undefined;
+    closeLinkToolCallback?.();
+    this.licit?.editorView?.focus();
+  }
+
+  protected onLinkToolSave(event: LinkToolSaveEvent): void {
+    const href = event.url ?? event.target?.id;
+    this.applyLinkFromTool?.(href, event.linkDisplayText);
+    this.closeLinkTool();
+  }
+
+  private openLinkTool(
+    link: string,
+    popupString: string,
+    applyLink?: (href?: string, linkDisplayText?: string) => void,
+    closeLinkTool?: () => void,
+    linkItems?: Record<LinkToolCategory, LinkToolItem[]>
+  ): void {
+    this.dialogService.close();
+    this.applyLinkFromTool = applyLink;
+    this.closeLinkToolCallback = closeLinkTool;
+    this.linkToolRef = this.dialogService.open(MoLinkToolComponent, {
+      data: {
+        highlightedText: popupString || this.getSelectedText(),
+        initialUrl: link ?? '',
+        ...(linkItems ? { linkItems } : {}),
+      },
+    });
+    this.linkToolSubscriptions = [
+      this.linkToolRef.instance.saveLink.subscribe((event) =>
+        this.onLinkToolSave(event)
+      ),
+      this.linkToolRef.instance.closeTool.subscribe(() => this.closeLinkTool()),
+    ];
+    this.linkToolRef.onDestroy(() => this.finalizeLinkTool());
+  }
+
+  private getSelectedText(): string {
+    const editorView = this.licit?.editorView;
+    if (!editorView) {
+      return '';
+    }
+
+    const { doc, selection } = editorView.state;
+    return doc.textBetween(selection.from, selection.to, ' ');
   }
   /**
    * Called by angular to clean up component.
    */
   ngOnDestroy() {
+    this.dialogService.close();
     // Clean up the react stuff
-    this.root.unmount();
+    this.root?.unmount();
   }
 
   /**
