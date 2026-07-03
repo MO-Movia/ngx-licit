@@ -1,22 +1,6 @@
 /**
- * @license
- * @copyright
- * Copyright 2025 Modus Operandi, Inc.
- * SBIR DATA RIGHTS
- * Contract No. FA486122D0006 (KNITE III)
- * Contractor Name: Modus Operandi, Inc., 304 S Harbor City Blvd., Suite 100, Melbourne, FL 32901-1382
- * Expiration of SBIR Data Rights Period: August 31, 2042, subject to
- * extensions granted per Section 8(b)(2) of the SBA SBIR Policy Directive
- *
- * The Government's rights to use, modify, reproduce, release, perform,
- * display, or disclose technical data or computer software marked with this
- * legend are restricted during the period shown as provided in paragraph
- * (b)(4) of the Rights in Noncommercial Technical Data and Computer
- * Software--Small Business Innovative Research (SBIR) Program clause
- * contained in the above identified contract. No restrictions apply after
- * the expiration date shown above. Any reproduction of technical data,
- * computer software, or portions thereof marked with this legend must also
- * reproduce the markings.
+ * @license MIT
+ * @copyright Copyright 2026 Modus Operandi Inc. All Rights Reserved.
  */
 
 import { Injectable } from '@angular/core';

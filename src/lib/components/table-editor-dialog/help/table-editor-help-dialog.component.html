@@ -1,0 +1,9 @@
+<h3 matDialogTitle>{{ help().title }}</h3>
+
+<button mat-icon-button matDialogClose aria-label="Close help">
+  <mat-icon>close</mat-icon>
+</button>
+
+<mat-dialog-content>
+  <licit-table-editor-help [help]="help()" />
+</mat-dialog-content>

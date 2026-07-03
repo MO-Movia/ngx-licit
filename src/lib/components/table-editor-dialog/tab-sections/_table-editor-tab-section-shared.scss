@@ -1,0 +1,112 @@
+@mixin form-controls {
+  mat-form-field {
+    --mat-form-field-container-height: 42px;
+    --mat-form-field-container-vertical-padding: 9px;
+  }
+
+  .compact-field {
+    flex: 1;
+  }
+}
+
+@mixin labels {
+  .label,
+  .field-label {
+    display: block;
+    color: var(--mat-sys-outline);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    margin: 0 0 8px;
+    text-transform: uppercase;
+  }
+
+  .readout {
+    margin: 0 0 20px;
+
+    span {
+      color: var(--mat-sys-primary);
+      font-weight: 600;
+    }
+  }
+}
+
+@mixin tab-content {
+  .tab-content {
+    padding: var(--mat-dialog-with-actions-content-padding, 20px 24px 24px);
+  }
+}
+
+@mixin layout-grid($columns: minmax(240px, 1fr) minmax(280px, 1fr)) {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: $columns;
+}
+
+@mixin control-layout {
+  .control-stack,
+  .control-row,
+  .color-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .control-stack {
+    flex-direction: column;
+  }
+
+  .control-row,
+  .color-row {
+    align-items: center;
+  }
+}
+
+@mixin color-controls {
+  .color-input {
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    height: 40px;
+    padding: 0;
+    width: 40px;
+  }
+
+  .color-input::-webkit-color-swatch,
+  .color-input::-moz-color-swatch {
+    border-radius: 6px;
+  }
+
+  .hex-color-input {
+    text-align: center;
+  }
+}
+
+@mixin toggle-controls {
+  .control-row .stretch-toggle {
+    flex: 1 1 0;
+  }
+
+  .stretch-toggle {
+    width: 100%;
+
+    mat-button-toggle {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+
+  .table-editor-toggle {
+    --mat-button-toggle-background-color: var(
+      --mat-sys-surface-container-lowest
+    );
+    --mat-button-toggle-divider-color: var(--mat-sys-outline-variant);
+    --mat-button-toggle-label-text-size: 13px;
+    --mat-button-toggle-label-text-tracking: 0;
+    --mat-button-toggle-label-text-weight: 500;
+    --mat-button-toggle-selected-state-background-color: var(
+      --mat-sys-surface-container-high
+    );
+    --mat-button-toggle-selected-state-text-color: var(--mat-sys-primary);
+    --mat-button-toggle-shape: 4px;
+    --mat-button-toggle-text-color: var(--mat-sys-outline);
+  }
+}

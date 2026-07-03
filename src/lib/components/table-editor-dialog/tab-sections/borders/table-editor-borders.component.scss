@@ -1,0 +1,198 @@
+@use '../table-editor-tab-section-shared' as shared;
+
+@include shared.form-controls;
+@include shared.labels;
+@include shared.tab-content;
+@include shared.control-layout;
+@include shared.color-controls;
+@include shared.toggle-controls;
+
+.border-layout {
+  @include shared.layout-grid;
+}
+
+.edge-controls .field-label:not(:first-of-type) {
+  margin-top: 16px;
+}
+
+.weight-control {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.line-style-sample {
+  display: inline-block;
+  transform: translateY(-2px);
+  width: 28px;
+}
+
+.solid-line,
+.dashed-line {
+  border-top: 2px solid currentColor;
+}
+
+.dashed-line {
+  border-top-style: dashed;
+}
+
+.double-line {
+  border-top: 4px double currentColor;
+}
+
+.weight-custom-field {
+  width: 84px;
+}
+
+.weight-custom-input {
+  color: var(--mat-sys-primary);
+  font-weight: 600;
+  text-align: center;
+}
+
+.weight-custom-input::-webkit-outer-spin-button,
+.weight-custom-input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.weight-custom-input[type='number'] {
+  appearance: textfield;
+}
+
+.weight-custom-suffix {
+  color: var(--mat-sys-outline);
+  font-size: 12px;
+  margin-right: -4px;
+}
+
+@property --border-glow-transparency {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 97.2%;
+}
+
+.border-map {
+  animation: border-target-glow 1800ms ease-in-out infinite;
+  height: 200px;
+  margin: 24px auto 0;
+  position: relative;
+  width: 200px;
+}
+
+.map-cell,
+.map-line,
+.border-target,
+.preview-line {
+  position: absolute;
+}
+
+.map-cell {
+  background: color-mix(
+    in srgb,
+    var(--mat-sys-surface-container-high),
+    transparent 20%
+  );
+  inset: 0;
+}
+
+.map-line {
+  background: var(--mat-sys-outline-variant);
+}
+
+.map-line-v {
+  bottom: 0;
+  left: 50%;
+  top: 0;
+  width: 1px;
+}
+
+.map-line-h {
+  height: 1px;
+  left: 0;
+  right: 0;
+  top: 50%;
+}
+
+.border-target {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+
+.border-target.active .preview-line {
+  box-shadow: 0 0 4.4px 1.1px
+    color-mix(
+      in srgb,
+      var(--mat-sys-primary),
+      transparent var(--border-glow-transparency)
+    );
+  filter: brightness(1.35) saturate(1.2);
+  opacity: 1;
+}
+
+@keyframes border-target-glow {
+  0%,
+  100% {
+    --border-glow-transparency: 97.2%;
+  }
+
+  50% {
+    --border-glow-transparency: 72%;
+  }
+}
+
+.preview-line-h {
+  left: 0;
+  right: 0;
+}
+
+.preview-line-v {
+  bottom: 0;
+  top: 0;
+}
+
+.line-top,
+.line-bottom {
+  height: 18px;
+  left: -8px;
+  right: -8px;
+}
+
+.line-left,
+.line-right {
+  bottom: -8px;
+  top: -8px;
+  width: 18px;
+}
+
+.line-top {
+  top: -8px;
+}
+
+.line-bottom {
+  bottom: -8px;
+}
+
+.line-left {
+  left: -8px;
+}
+
+.line-right {
+  right: -8px;
+}
+
+.line-inner-h {
+  height: 18px;
+  left: 0;
+  right: 0;
+  top: calc(50% - 9px);
+}
+
+.line-inner-v {
+  bottom: 0;
+  left: calc(50% - 9px);
+  top: 0;
+  width: 18px;
+}

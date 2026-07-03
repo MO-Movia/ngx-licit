@@ -1,0 +1,12 @@
+<ol class="help-steps" aria-label="Help summary steps">
+  @for (step of help().steps; track step) {
+    <li>{{ step }}</li>
+  }
+</ol>
+
+@for (section of help().sections; track section.title) {
+  <section class="help-section">
+    <h4>{{ section.title }}</h4>
+    <p>{{ section.body }}</p>
+  </section>
+}

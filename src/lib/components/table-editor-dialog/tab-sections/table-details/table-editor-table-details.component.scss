@@ -1,0 +1,103 @@
+@use '../table-editor-tab-section-shared' as shared;
+
+@include shared.form-controls;
+@include shared.labels;
+@include shared.tab-content;
+@include shared.toggle-controls;
+
+.details-layout {
+  @include shared.layout-grid;
+}
+
+.details-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.details-controls .stretch-toggle {
+  margin-bottom: 16px;
+}
+
+.details-input-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.details-field {
+  min-width: 0;
+}
+
+.details-field mat-form-field {
+  width: 100%;
+}
+
+.details-field input {
+  text-align: right;
+}
+
+.details-unit-suffix {
+  color: var(--mat-sys-outline);
+  font-size: 12px;
+}
+
+.details-field.metric-overflow input {
+  color: var(--mat-sys-error);
+}
+
+.visualization {
+  align-items: center;
+  background: var(--mat-sys-surface-container-lowest);
+  border: 1px solid var(--mat-sys-outline-variant);
+  display: flex;
+  height: 240px;
+  justify-content: center;
+}
+
+.visualization-note {
+  color: var(--mat-sys-outline);
+  font-size: 11px;
+  margin: 16px 0 0;
+  text-align: center;
+}
+
+.page-box {
+  border: 2px dashed var(--mat-sys-outline);
+  position: relative;
+}
+
+.table-box {
+  background: rgba(74, 144, 226, 0.2);
+  border: 1px solid rgba(74, 144, 226, 0.4);
+  box-sizing: border-box;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+
+.page-width,
+.page-height {
+  color: var(--mat-sys-outline);
+  font-size: 10px;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.page-width.metric-overflow,
+.page-height.metric-overflow {
+  color: #ff4a4a;
+}
+
+.page-width {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.page-height {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+}

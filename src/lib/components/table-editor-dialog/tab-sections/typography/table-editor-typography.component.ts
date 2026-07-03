@@ -1,0 +1,177 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2026 Modus Operandi Inc. All Rights Reserved.
+ */
+
+import { Component, Signal, computed, input, model } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+import type {
+  FontOption,
+  LayoutConfig,
+  TypographyConfig,
+} from '../../table-editor-dialog.model';
+import type { TableEditorForm } from '../../table-editor-form';
+import { verticalAlignToFlex } from '../../table-editor-domain';
+import {
+  nativeColorValue,
+  normalizeMeasureInput,
+  normalizePaddingInput,
+} from '../../table-editor-normalizers';
+
+/**
+ * Table editor typography and padding controls.
+ */
+@Component({
+  selector: 'licit-table-editor-typography',
+  templateUrl: './table-editor-typography.component.html',
+  styleUrl: './table-editor-typography.component.scss',
+  imports: [
+    ReactiveFormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatAutocompleteModule,
+    MatButtonToggleModule,
+    MatTooltipModule,
+  ],
+})
+export class TableEditorTypographyComponent {
+  public readonly form = input.required<TableEditorForm>();
+  public readonly paddingLocked = model.required<boolean>();
+  public readonly layoutValue = input.required<Signal<LayoutConfig>>();
+  public readonly typographyValue = input.required<Signal<TypographyConfig>>();
+  public readonly fontOptions = input.required<FontOption[]>();
+  public readonly fontSizeOptions = input.required<number[]>();
+
+  public readonly paddingLockedValue = computed(() => this.paddingLocked());
+
+  public readonly previewOuterStyle = computed(() => {
+    const layout = this.layoutValue()();
+
+    return {
+      padding: `${layout.paddingTop} ${layout.paddingRight} ${layout.paddingBottom} ${layout.paddingLeft}`,
+    };
+  });
+
+  public readonly previewInnerStyle = computed(() => {
+    const typography = this.typographyValue()();
+
+    return {
+      'background-color':
+        typography.backgroundColor === 'transparent'
+          ? 'transparent'
+          : nativeColorValue(typography.backgroundColor),
+      'align-items': verticalAlignToFlex(typography.verticalAlign),
+    };
+  });
+
+  public readonly previewTextStyle = computed(() => {
+    const typography = this.typographyValue()();
+
+    return {
+      color: nativeColorValue(typography.textColor),
+      'font-family': typography.fontFamily,
+      'font-size': typography.fontSize,
+      'font-style': typography.italic ? 'italic' : 'normal',
+      'font-weight': typography.bold ? '700' : '400',
+      'letter-spacing': typography.letterSpacing,
+      'line-height': typography.lineHeight,
+      'text-align': typography.textAlign,
+      'text-decoration': typography.underline ? 'underline' : 'none',
+    };
+  });
+
+  protected nativeColorValue(value: string | null | undefined): string {
+    return nativeColorValue(value);
+  }
+
+  public setColor(
+    control: 'textColor' | 'backgroundColor',
+    value: string
+  ): void {
+    this.form().controls.typography.controls[control].setValue(
+      nativeColorValue(value)
+    );
+  }
+
+  public clearBackground(): void {
+    this.form().controls.typography.controls.backgroundColor.setValue(
+      'transparent'
+    );
+  }
+
+  public syncPadding(changedControl: keyof LayoutConfig): void {
+    if (changedControl === 'paddingLocked' || !this.paddingLocked()) return;
+
+    const value = normalizePaddingInput(
+      this.form().controls.layout.controls[changedControl].value
+    );
+    this.form().controls.layout.patchValue(
+      {
+        paddingTop: value,
+        paddingRight: value,
+        paddingBottom: value,
+        paddingLeft: value,
+      },
+      { emitEvent: true }
+    );
+  }
+
+  public togglePaddingLock(): void {
+    const locked = !this.paddingLocked();
+    this.paddingLocked.set(locked);
+    this.form().controls.layout.controls.paddingLocked.setValue(locked);
+
+    if (locked) {
+      this.syncPadding('paddingTop');
+    }
+  }
+
+  public normalizePadding(control: keyof LayoutConfig): void {
+    if (control === 'paddingLocked') return;
+
+    const value = normalizePaddingInput(
+      this.form().controls.layout.controls[control].value
+    );
+    this.form().controls.layout.controls[control].setValue(value);
+    this.syncPadding(control);
+  }
+
+  public setFontSize(value: string): void {
+    const size = String(value ?? '').replaceAll(/\D/g, '');
+    if (size !== value) {
+      this.form().controls.typography.controls.fontSize.setValue(size);
+    }
+  }
+
+  public normalizeFontSize(): void {
+    this.form().controls.typography.controls.fontSize.setValue(
+      normalizePaddingInput(
+        this.form().controls.typography.controls.fontSize.value
+      )
+    );
+  }
+
+  public normalizeTypographyMeasure(
+    control: 'letterSpacing' | 'lineHeight'
+  ): void {
+    const field = this.form().controls.typography.controls[control];
+    field.setValue(normalizeMeasureInput(field.value));
+  }
+
+  public toggleTypographyStyle(control: 'bold' | 'italic' | 'underline'): void {
+    const field = this.form().controls.typography.controls[control];
+    field.setValue(!field.value);
+  }
+}

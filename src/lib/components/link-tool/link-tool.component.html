@@ -1,7 +1,12 @@
 <section class="link-tool" aria-label="Link Tool">
   <header class="link-tool__header">
     <h2>Link Tool</h2>
-    <button class="link-tool__close" type="button" aria-label="Close link tool" (click)="close()">
+    <button
+      class="link-tool__close"
+      type="button"
+      aria-label="Close link tool"
+      (click)="close()"
+    >
       x
     </button>
   </header>
@@ -81,12 +86,17 @@
       }
 
       <div class="link-tool__browser">
-        <aside class="link-tool__side-tabs" aria-label="Available link categories">
+        <aside
+          class="link-tool__side-tabs"
+          aria-label="Available link categories"
+        >
           @for (category of categories; track category.id) {
             <button
               type="button"
               class="link-tool__side-tab"
-              [class.link-tool__side-tab--active]="activeCategory() === category.id"
+              [class.link-tool__side-tab--active]="
+                activeCategory() === category.id
+              "
               (click)="selectCategory(category.id)"
             >
               {{ category.label }}
@@ -114,7 +124,10 @@
             role="tree"
           >
             <ng-container
-              *ngTemplateOutlet="treeItems; context: { $implicit: visibleItems(), level: 0 }"
+              *ngTemplateOutlet="
+                treeItems;
+                context: { $implicit: visibleItems(), level: 0 }
+              "
             ></ng-container>
           </div>
         </section>
@@ -123,7 +136,12 @@
   }
 
   <footer class="link-tool__footer">
-    <button class="link-tool__save" type="button" [disabled]="!canSave()" (click)="save()">
+    <button
+      class="link-tool__save"
+      type="button"
+      [disabled]="!canSave()"
+      (click)="save()"
+    >
       Save
     </button>
   </footer>
@@ -143,16 +161,17 @@
           role="treeitem"
           [attr.aria-selected]="selectedItem()?.id === item.id"
           [attr.aria-expanded]="item.children?.length ? isExpanded(item) : null"
-          (click)="selectItem(item)"
+          (click)="onRowClick(item, $event)"
         >
           <span
             class="link-tool__caret"
             [class.link-tool__caret--expanded]="isExpanded(item)"
             [class.link-tool__caret--empty]="!item.children?.length"
-            (click)="toggleItem(item, $event)"
           ></span>
           <span class="link-tool__node-text">
-            <span class="link-tool__node-primary">{{ getPrimaryText(item) }}</span>
+            <span class="link-tool__node-primary">{{
+              getPrimaryText(item)
+            }}</span>
             @if (getSummaryText(item); as summaryText) {
               <span class="link-tool__summary">{{ summaryText }}</span>
             }

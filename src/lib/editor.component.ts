@@ -15,8 +15,8 @@ import {
   input,
   output,
   effect,
-  ViewChild,
   inject,
+  viewChild,
 } from '@angular/core';
 import type { ComponentRef, OutputRefSubscription } from '@angular/core';
 
@@ -63,9 +63,7 @@ export const FRAME = '.czi-editor-frame-body';
  */
 @Component({
   selector: 'licit-editor',
-  template: `
-    <div #reactHost class="licit-editor__react-host"></div>
-  `,
+  template: ` <div #reactHost class="licit-editor__react-host"></div> `,
   styleUrls: ['./editor.component.scss'],
   // Changes from here down are handled by React
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -75,8 +73,8 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
    * host for Licit (React) component
    */
   private root?: ReactDOM.Root;
-  @ViewChild('reactHost', { static: true })
-  private reactHost!: ElementRef<HTMLElement>;
+  private readonly reactHost =
+    viewChild.required<ElementRef<HTMLDivElement>>('reactHost');
 
   /**
    * Contains the current editor instance.
@@ -229,16 +227,13 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
   }));
   //#endregion
 
-  private applyLinkFromTool?: (
-    href?: string,
-    linkDisplayText?: string
-  ) => void;
+  private applyLinkFromTool?: (href?: string, linkDisplayText?: string) => void;
   private closeLinkToolCallback?: () => void;
   private linkToolRef?: ComponentRef<MoLinkToolComponent>;
   private linkToolSubscriptions: OutputRefSubscription[] = [];
   private readonly ngZone = inject(NgZone);
   private readonly dialogService = inject(DynamicDialogService);
-  readonly runtime = input.required<EditorRuntime>();
+  readonly runtime = input<EditorRuntime>();
   private readonly el = inject(ElementRef);
 
   /**
@@ -263,7 +258,7 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
           });
         }
       );
-      setRuntime(runtime);
+      setRuntime(runtime!);
     });
     effect(() => {
       const reference = this.reference();
@@ -283,13 +278,13 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
   private renderLicit(recreateRoot = false): void {
     const props = this.props();
 
-    if (!this.reactHost?.nativeElement) {
+    if (!this.reactHost()?.nativeElement) {
       return;
     }
 
     if (recreateRoot) {
       this.root?.unmount();
-      this.root = ReactDOM.createRoot(this.reactHost.nativeElement);
+      this.root = ReactDOM.createRoot(this.reactHost().nativeElement);
     }
 
     this.root?.render(

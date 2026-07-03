@@ -1,0 +1,132 @@
+<div [formGroup]="form()">
+  <div class="tab-content" formGroupName="borders">
+    <div class="border-layout">
+      <section>
+        <span class="label">BORDER SELECTION</span>
+        <p class="readout">
+          Target: <span>{{ targetReadout() }}</span>
+        </p>
+
+        <div class="border-map">
+          <div class="map-cell"></div>
+          @if (!isSingleSelection()) {
+            <div class="map-line map-line-v"></div>
+            <div class="map-line map-line-h"></div>
+          }
+
+          @for (item of borderEdges(); track item.edge) {
+            @if (!item.inner || !isSingleSelection()) {
+              <button
+                class="border-target"
+                type="button"
+                [class]="item.className"
+                [class.active]="isEdgeActive(item.edge)"
+                [attr.aria-pressed]="isEdgeActive(item.edge)"
+                [attr.aria-label]="item.label"
+                (click)="toggleEdge(item.edge)"
+              >
+                <span
+                  class="preview-line"
+                  [class.preview-line-v]="item.vertical"
+                  [class.preview-line-h]="!item.vertical"
+                  [style.border-left]="
+                    item.vertical ? getEdgeBorder(item.edge) : null
+                  "
+                  [style.border-top]="
+                    !item.vertical ? getEdgeBorder(item.edge) : null
+                  "
+                ></span>
+              </button>
+            }
+          }
+        </div>
+      </section>
+
+      <section class="edge-controls" formGroupName="border">
+        <span class="label">APPLY TO SELECTED EDGES</span>
+
+        <span class="field-label">Line Style</span>
+        <mat-button-toggle-group
+          class="table-editor-toggle stretch-toggle"
+          formControlName="style"
+          aria-label="Line Style"
+          hideSingleSelectionIndicator
+        >
+          <mat-button-toggle value="solid" aria-label="Solid line">
+            <span class="line-style-sample solid-line"></span>
+          </mat-button-toggle>
+          <mat-button-toggle value="dashed" aria-label="Dashed line">
+            <span class="line-style-sample dashed-line"></span>
+          </mat-button-toggle>
+          <mat-button-toggle value="double" aria-label="Double line">
+            <span class="line-style-sample double-line"></span>
+          </mat-button-toggle>
+          <mat-button-toggle value="none">None</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <span class="field-label">Weight</span>
+        <div class="weight-control">
+          <mat-button-toggle-group
+            class="table-editor-toggle stretch-toggle weight-toggle"
+            [value]="selectedBorderWidth()"
+            aria-label="Weight"
+            hideSingleSelectionIndicator
+            (change)="setBorderWidth($event.value)"
+          >
+            @for (width of borderWidthOptions(); track width) {
+              <mat-button-toggle [value]="width">{{ width }}</mat-button-toggle>
+            }
+          </mat-button-toggle-group>
+
+          <mat-form-field
+            appearance="outline"
+            class="weight-custom-field"
+            subscriptSizing="dynamic"
+          >
+            <input
+              matInput
+              class="weight-custom-input"
+              type="number"
+              min="1"
+              placeholder="px"
+              aria-label="Custom border weight"
+              [value]="customBorderWidth()"
+              (input)="setCustomBorderWidth($any($event.target).value)"
+            />
+            @if (customBorderWidth()) {
+              <span matTextSuffix class="weight-custom-suffix">px</span>
+            }
+          </mat-form-field>
+        </div>
+
+        <span class="field-label">Color</span>
+        <div class="color-row">
+          <input
+            class="color-input"
+            type="color"
+            aria-label="Border color picker"
+            [value]="
+              nativeColorValue(
+                form().controls.borders.controls.border.controls.color.value
+              )
+            "
+            (input)="setBorderColor($any($event.target).value)"
+          />
+          <mat-form-field
+            appearance="outline"
+            class="compact-field"
+            subscriptSizing="dynamic"
+          >
+            <input
+              matInput
+              class="hex-color-input"
+              formControlName="color"
+              aria-label="Border color"
+              placeholder="Border color"
+            />
+          </mat-form-field>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

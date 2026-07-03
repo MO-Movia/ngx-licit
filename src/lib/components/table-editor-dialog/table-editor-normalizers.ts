@@ -1,0 +1,62 @@
+/**
+ * @license MIT
+ * @copyright Copyright 2026 Modus Operandi Inc. All Rights Reserved.
+ */
+
+import type {
+  NumericFormValue,
+  NumericInputValue,
+} from './table-editor-dialog.model';
+
+/** Parses a loose numeric value by ignoring units and labels. */
+export function parseNumber(value: NumericInputValue): number {
+  return Number.parseFloat(String(value ?? '').replaceAll(/[^0-9.-]/g, ''));
+}
+
+/** Converts a numeric form value to a non-negative whole-number string. */
+export function normalizePaddingInput(value: NumericFormValue): string {
+  return String(Math.max(0, Math.round(parseNumber(value) || 0)));
+}
+
+/** Converts a loose dimension value to a non-negative whole-number string. */
+export function normalizeDimensionInput(value: NumericInputValue): string {
+  const parsed = parseNumber(value);
+  const dimension = Number.isFinite(parsed)
+    ? Math.max(0, Math.round(parsed))
+    : 0;
+
+  return String(dimension);
+}
+
+/** Converts a loose count value to a non-negative whole number. */
+export function normalizeCountInput(value: NumericInputValue): number {
+  return Number(normalizeDimensionInput(value));
+}
+
+/** Converts a numeric form value to a non-negative measurement string. */
+export function normalizeMeasureInput(value: NumericFormValue): string {
+  return String(Math.max(0, parseNumber(value) || 0));
+}
+
+/** Converts a numeric form value to a pixel string. */
+export function normalizePx(value: NumericFormValue): string {
+  return `${normalizePaddingInput(value)}px`;
+}
+
+/** Converts supported hex colors into native color-input values. */
+export function nativeColorValue(
+  value: string | null | undefined,
+  fallback = '#000000'
+): string {
+  const color = String(value ?? '').trim();
+  const shortHex = /^#([0-9a-f]{3})$/i.exec(color);
+
+  if (shortHex) {
+    return `#${shortHex[1]
+      .split('')
+      .map((character) => `${character}${character}`)
+      .join('')}`.toLowerCase();
+  }
+
+  return /^#[0-9a-f]{6}$/i.test(color) ? color.toLowerCase() : fallback;
+}

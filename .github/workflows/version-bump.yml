@@ -48,5 +48,5 @@ jobs:
           git commit -a -m "Bump version to ${TAG}"
           git push -u origin "Release/${TAG}"
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # PR must be done manually. PR with GITHUB_TOKEN won't trigger workflows.

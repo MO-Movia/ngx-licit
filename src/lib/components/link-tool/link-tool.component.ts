@@ -3,7 +3,7 @@
  * @copyright Copyright 2026 Modus Operandi Inc. All Rights Reserved.
  */
 
-import { CommonModule } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -49,13 +49,13 @@ const EMPTY_LINK_ITEMS: Record<LinkToolCategory, LinkToolItem[]> = {
   tables: [],
   paragraphs: [],
 };
-const SENTENCE_BOUNDARY = /[A-Za-z)]\.\s+/;
+const SENTENCE_BOUNDARY = /[A-Za-z)]\.\s{1,10000}/;
 
 /**
  * Link tool dialog UI for external, internal, and external-document links.
  */
 @Component({
-  imports: [CommonModule, FormsModule],
+  imports: [NgTemplateOutlet, FormsModule],
   selector: 'licit-link-tool',
   templateUrl: './link-tool.component.html',
   styleUrls: ['./link-tool.component.scss'],
@@ -99,8 +99,9 @@ export class MoLinkToolComponent {
   protected readonly documentFilter = model<string>('');
   protected readonly itemFilter = model<string>('');
   protected readonly selectedItem = model<LinkToolItem | undefined>(undefined);
-  protected readonly selectedDocument =
-    model<LinkToolDocument | undefined>(undefined);
+  protected readonly selectedDocument = model<LinkToolDocument | undefined>(
+    undefined
+  );
   protected readonly expandedItemIds = model<ReadonlySet<string>>(new Set());
 
   constructor() {
@@ -185,6 +186,15 @@ export class MoLinkToolComponent {
     this.selectedItem.set(item);
   }
 
+  protected onRowClick(item: LinkToolItem, event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target.classList.contains('link-tool__caret')) {
+      this.toggleItem(item, event);
+    } else {
+      this.selectItem(item);
+    }
+  }
+
   protected isExpanded(item: LinkToolItem): boolean {
     return (
       this.itemFilter().trim().length > 0 || this.expandedItemIds().has(item.id)
@@ -228,7 +238,7 @@ export class MoLinkToolComponent {
     const splitIndex = this.getSentenceSplitIndex(item.label);
     return splitIndex === -1
       ? ''
-      : item.label.slice(splitIndex).replace(/^\s+/, '');
+      : item.label.slice(splitIndex).replace(/^\s{1,10000}/, '');
   }
 
   protected save(): void {
@@ -265,7 +275,8 @@ export class MoLinkToolComponent {
   private getSentenceSplitIndex(text: string): number {
     const sentenceBoundary = SENTENCE_BOUNDARY.exec(text);
     return sentenceBoundary
-      ? sentenceBoundary.index + sentenceBoundary[0].replace(/\s+$/, '').length
+      ? sentenceBoundary.index +
+          sentenceBoundary[0].replace(/\s{1,10000}$/, '').length
       : -1;
   }
 
@@ -336,5 +347,4 @@ export class MoLinkToolComponent {
 
     return undefined;
   }
-
 }

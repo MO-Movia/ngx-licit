@@ -1,0 +1,186 @@
+@use '../table-editor-tab-section-shared' as shared;
+
+@include shared.form-controls;
+@include shared.labels;
+@include shared.tab-content;
+@include shared.control-layout;
+@include shared.color-controls;
+@include shared.toggle-controls;
+
+.typography-layout {
+  @include shared.layout-grid(minmax(320px, 1fr) 275px);
+}
+
+.font-size-field {
+  flex: 0 0 96px;
+
+  input {
+    text-align: center;
+  }
+}
+
+.typography-measure-field {
+  input {
+    text-align: right;
+  }
+}
+
+.measure-prefix {
+  color: var(--mat-sys-outline);
+  font-size: 13px;
+}
+
+.measure-prefix-line {
+  font-size: 14px;
+}
+
+.style-buttons {
+  display: flex;
+  gap: 8px;
+
+  .active {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-primary);
+  }
+}
+
+.typ-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 320px;
+}
+
+.padding-card {
+  align-items: center;
+  border: 1px dashed var(--mat-sys-outline-variant);
+  border-radius: 6px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 52px 1fr 52px;
+  grid-template-rows: 42px 1fr 42px;
+  justify-items: center;
+  padding: 16px 8px;
+}
+
+.pad-field {
+  width: 52px;
+
+  input {
+    text-align: center;
+  }
+}
+
+.pad-top {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.pad-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.pad-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.pad-bottom {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.pad-lock {
+  color: var(--mat-sys-primary);
+  grid-column: 3;
+  grid-row: 3;
+}
+
+.preview {
+  background-color: #111;
+  background-image:
+    linear-gradient(
+      45deg,
+      #333 25%,
+      transparent 25%,
+      transparent 75%,
+      #333 75%
+    ),
+    linear-gradient(45deg, #333 25%, transparent 25%, transparent 75%, #333 75%);
+  background-position:
+    0 0,
+    8px 8px;
+  background-size: 16px 16px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  box-sizing: border-box;
+  display: flex;
+  grid-column: 2;
+  grid-row: 2;
+  min-height: 140px;
+  width: 100%;
+}
+
+.preview-inner {
+  border: 1px dashed var(--mat-sys-outline-variant);
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.preview-inner p {
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.typ-color-row {
+  align-items: center;
+  display: grid;
+  column-gap: 12px;
+  grid-template-columns: 40px minmax(0, 1fr) 40px minmax(0, 1fr) 40px;
+}
+
+.control-stack .field-label + .table-editor-toggle {
+  margin-top: -12px;
+}
+
+.typ-color-group,
+.typ-color-group .color-row {
+  display: contents;
+}
+
+.typ-color-group:first-child .field-label {
+  grid-column: 1 / 3;
+  grid-row: 1;
+}
+
+.typ-color-group:first-child .color-input {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.typ-color-group:first-child mat-form-field {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.typ-color-group:nth-child(2) .field-label {
+  grid-column: 3 / 6;
+  grid-row: 1;
+}
+
+.typ-color-group:nth-child(2) .color-input {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.typ-color-group:nth-child(2) mat-form-field {
+  grid-column: 4;
+  grid-row: 2;
+}
+
+.typ-color-group:nth-child(2) button {
+  grid-column: 5;
+  grid-row: 2;
+}

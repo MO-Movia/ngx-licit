@@ -1,0 +1,38 @@
+<header class="dialog-header" matDialogTitle>
+  <h3>Properties: Selected Cell Range</h3>
+  <div class="dialog-header-actions">
+    <button
+      mat-icon-button
+      type="button"
+      aria-label="Help with this tab"
+      matTooltip="Help with this tab"
+      (click)="openHelp()"
+    >
+      <mat-icon>help_outline</mat-icon>
+    </button>
+    <button mat-icon-button matDialogClose aria-label="Close table editor">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</header>
+
+<mat-dialog-content>
+  <licit-table-editor
+    [data]="data"
+    [fontOptions]="fontOptions"
+    [pageLimits]="pageLimits"
+    (apply)="onApply($event)"
+    (cancelRequested)="onCancel()"
+  />
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button type="button" (click)="resetSettings()">
+    Reset Settings
+  </button>
+  <span class="spacer"></span>
+  <button mat-button type="button" (click)="onCancel()">Cancel</button>
+  <button mat-flat-button class="primary" type="button" (click)="onSubmit()">
+    Apply
+  </button>
+</mat-dialog-actions>

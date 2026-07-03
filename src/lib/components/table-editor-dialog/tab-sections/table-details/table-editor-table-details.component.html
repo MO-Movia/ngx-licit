@@ -1,0 +1,163 @@
+<div class="tab-content details-layout" [formGroup]="form()">
+  <section class="details-controls">
+    <div formGroupName="table">
+      <span class="field-label">Page Orientation</span>
+      <mat-button-toggle-group
+        class="table-editor-toggle stretch-toggle"
+        formControlName="pageOrientation"
+        aria-label="Page Orientation"
+        hideSingleSelectionIndicator
+      >
+        <mat-button-toggle value="portrait">Portrait</mat-button-toggle>
+        <mat-button-toggle value="landscape">Landscape</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <div class="details-input-grid">
+        <div
+          class="details-field"
+          [class.metric-overflow]="tableWidthOverflow()"
+        >
+          <span class="field-label">Table Width</span>
+          <mat-form-field
+            appearance="outline"
+            class="compact-field"
+            subscriptSizing="dynamic"
+          >
+            <input
+              matInput
+              type="number"
+              min="0"
+              readonly
+              formControlName="tableWidth"
+              aria-label="Table Width"
+            />
+            <span matTextSuffix class="details-unit-suffix">px</span>
+          </mat-form-field>
+        </div>
+
+        <div
+          class="details-field"
+          [class.metric-overflow]="tableHeightOverflow()"
+        >
+          <span class="field-label">Table Height</span>
+          <mat-form-field
+            appearance="outline"
+            class="compact-field"
+            subscriptSizing="dynamic"
+          >
+            <input
+              matInput
+              type="number"
+              min="0"
+              readonly
+              formControlName="tableHeight"
+              aria-label="Table Height"
+            />
+            <span matTextSuffix class="details-unit-suffix">px</span>
+          </mat-form-field>
+        </div>
+
+        <div class="details-field">
+          <span class="field-label">Cell Width</span>
+          <mat-form-field
+            appearance="outline"
+            class="compact-field"
+            subscriptSizing="dynamic"
+          >
+            <input
+              matInput
+              type="number"
+              min="0"
+              readonly
+              [value]="selectedCellDimensionValue('selectedCellWidth')"
+              aria-label="Cell Width"
+            />
+            @if (isSingleSelection()) {
+              <span matTextSuffix class="details-unit-suffix">px</span>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="details-field">
+          <span class="field-label">Cell Height</span>
+          <mat-form-field
+            appearance="outline"
+            class="compact-field"
+            subscriptSizing="dynamic"
+          >
+            <input
+              matInput
+              type="number"
+              min="0"
+              readonly
+              [value]="selectedCellDimensionValue('selectedCellHeight')"
+              aria-label="Cell Height"
+            />
+            @if (isSingleSelection()) {
+              <span matTextSuffix class="details-unit-suffix">px</span>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="details-input-grid" formGroupName="metadata">
+      <div class="details-field">
+        <span class="field-label">Total Rows</span>
+        <mat-form-field
+          appearance="outline"
+          class="compact-field"
+          subscriptSizing="dynamic"
+        >
+          <input
+            matInput
+            type="number"
+            min="0"
+            readonly
+            formControlName="totalRows"
+            aria-label="Total Rows"
+          />
+        </mat-form-field>
+      </div>
+
+      <div class="details-field">
+        <span class="field-label">Total Columns</span>
+        <mat-form-field
+          appearance="outline"
+          class="compact-field"
+          subscriptSizing="dynamic"
+        >
+          <input
+            matInput
+            type="number"
+            min="0"
+            readonly
+            formControlName="totalColumns"
+            aria-label="Total Columns"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="label">PAGE FIT VISUALIZATION</span>
+    <div class="visualization">
+      <div class="page-box" [style]="visualizationStyle()">
+        <span class="page-width" [class.metric-overflow]="tableWidthOverflow()"
+          >{{ activePageLimit().width }}px Limit</span
+        >
+        <span
+          class="page-height"
+          [class.metric-overflow]="tableHeightOverflow()"
+          >{{ activePageLimit().height }}px Limit</span
+        >
+        <div class="table-box" [style]="visualizationTableStyle()"></div>
+      </div>
+    </div>
+    <p class="visualization-note">
+      The outer dashed boundary represents the printable area of the page. The
+      blue box represents your current table footprint.
+    </p>
+  </section>
+</div>

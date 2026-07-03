@@ -1,0 +1,307 @@
+<div class="tab-content typography-layout" [formGroup]="form()">
+  <section class="typ-left">
+    <div class="padding-card" formGroupName="layout">
+      <mat-form-field
+        appearance="outline"
+        class="pad-field pad-top"
+        subscriptSizing="dynamic"
+      >
+        <input
+          matInput
+          inputmode="numeric"
+          pattern="\d{0,10000}"
+          formControlName="paddingTop"
+          (blur)="normalizePadding('paddingTop')"
+          (input)="syncPadding('paddingTop')"
+          aria-label="Padding top"
+        />
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        class="pad-field pad-left"
+        subscriptSizing="dynamic"
+      >
+        <input
+          matInput
+          inputmode="numeric"
+          pattern="\d{0,10000}"
+          formControlName="paddingLeft"
+          (blur)="normalizePadding('paddingLeft')"
+          (input)="syncPadding('paddingLeft')"
+          aria-label="Padding left"
+        />
+      </mat-form-field>
+
+      <div class="preview" [style]="previewOuterStyle()">
+        <div class="preview-inner" [style]="previewInnerStyle()">
+          <p [style]="previewTextStyle()">
+            Opto ut tibi sit dies laetus et felix. Spero hunc diem tibi afferre
+            gaudium, pacem et multam spem.
+          </p>
+        </div>
+      </div>
+
+      <mat-form-field
+        appearance="outline"
+        class="pad-field pad-right"
+        subscriptSizing="dynamic"
+      >
+        <input
+          matInput
+          inputmode="numeric"
+          pattern="\d{0,10000}"
+          formControlName="paddingRight"
+          (blur)="normalizePadding('paddingRight')"
+          (input)="syncPadding('paddingRight')"
+          aria-label="Padding right"
+        />
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        class="pad-field pad-bottom"
+        subscriptSizing="dynamic"
+      >
+        <input
+          matInput
+          inputmode="numeric"
+          pattern="\d{0,10000}"
+          formControlName="paddingBottom"
+          (blur)="normalizePadding('paddingBottom')"
+          (input)="syncPadding('paddingBottom')"
+          aria-label="Padding bottom"
+        />
+      </mat-form-field>
+
+      <button
+        mat-icon-button
+        class="pad-lock"
+        type="button"
+        [matTooltip]="paddingLockedValue() ? 'Unlock padding' : 'Lock padding'"
+        [attr.aria-label]="
+          paddingLockedValue() ? 'Unlock padding' : 'Lock padding'
+        "
+        (click)="togglePaddingLock()"
+      >
+        <mat-icon>{{
+          paddingLockedValue() ? 'lock' : 'lock_open_right'
+        }}</mat-icon>
+      </button>
+    </div>
+
+    <div class="typ-color-row" formGroupName="typography">
+      <div class="typ-color-group">
+        <span class="field-label">Text Color</span>
+        <div class="color-row">
+          <input
+            class="color-input"
+            type="color"
+            aria-label="Text color picker"
+            [value]="
+              nativeColorValue(
+                form().controls.typography.controls.textColor.value
+              )
+            "
+            (input)="setColor('textColor', $any($event.target).value)"
+          />
+          <mat-form-field
+            appearance="outline"
+            class="compact-field"
+            subscriptSizing="dynamic"
+          >
+            <input
+              matInput
+              class="hex-color-input"
+              formControlName="textColor"
+              aria-label="Text color"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="typ-color-group">
+        <span class="field-label">Cell Fill</span>
+        <div class="color-row">
+          <input
+            class="color-input"
+            type="color"
+            aria-label="Cell fill color picker"
+            [value]="
+              nativeColorValue(
+                form().controls.typography.controls.backgroundColor.value
+              )
+            "
+            (input)="setColor('backgroundColor', $any($event.target).value)"
+          />
+          <mat-form-field
+            appearance="outline"
+            class="compact-field"
+            subscriptSizing="dynamic"
+          >
+            <input
+              matInput
+              class="hex-color-input"
+              formControlName="backgroundColor"
+              aria-label="Cell fill"
+            />
+          </mat-form-field>
+          <button
+            mat-icon-button
+            type="button"
+            matTooltip="Clear Cell Fill"
+            aria-label="Clear Cell Fill"
+            (click)="clearBackground()"
+          >
+            <mat-icon>format_color_reset</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="control-stack" formGroupName="typography">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Font</mat-label>
+      <mat-select formControlName="fontFamily">
+        @for (font of fontOptions(); track font.value) {
+          <mat-option [value]="font.value">{{ font.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="control-row">
+      <mat-form-field
+        appearance="outline"
+        class="font-size-field"
+        subscriptSizing="dynamic"
+      >
+        <span matTextPrefix>Aa</span>
+        <input
+          matInput
+          inputmode="numeric"
+          pattern="\d{0,10000}"
+          formControlName="fontSize"
+          aria-label="Font size"
+          [matAutocomplete]="fontSizeAutocomplete"
+          (input)="setFontSize($any($event.target).value)"
+          (blur)="normalizeFontSize()"
+        />
+        <mat-autocomplete #fontSizeAutocomplete="matAutocomplete">
+          @for (size of fontSizeOptions(); track size) {
+            <mat-option [value]="size">{{ size }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="style-buttons">
+        <button
+          mat-icon-button
+          type="button"
+          [class.active]="form().controls.typography.controls.bold.value"
+          [attr.aria-pressed]="form().controls.typography.controls.bold.value"
+          aria-label="Bold"
+          (click)="toggleTypographyStyle('bold')"
+        >
+          <mat-icon>format_bold</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          type="button"
+          [class.active]="form().controls.typography.controls.italic.value"
+          [attr.aria-pressed]="form().controls.typography.controls.italic.value"
+          aria-label="Italic"
+          (click)="toggleTypographyStyle('italic')"
+        >
+          <mat-icon>format_italic</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          type="button"
+          [class.active]="form().controls.typography.controls.underline.value"
+          [attr.aria-pressed]="
+            form().controls.typography.controls.underline.value
+          "
+          aria-label="Underline"
+          (click)="toggleTypographyStyle('underline')"
+        >
+          <mat-icon>format_underlined</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="control-row">
+      <mat-form-field
+        appearance="outline"
+        class="compact-field typography-measure-field"
+        subscriptSizing="dynamic"
+      >
+        <span matTextPrefix class="measure-prefix">|A|</span>
+        <input
+          matInput
+          type="number"
+          step="1"
+          formControlName="letterSpacing"
+          aria-label="Letter spacing"
+          (blur)="normalizeTypographyMeasure('letterSpacing')"
+        />
+      </mat-form-field>
+      <mat-form-field
+        appearance="outline"
+        class="compact-field typography-measure-field"
+        subscriptSizing="dynamic"
+      >
+        <span matTextPrefix class="measure-prefix measure-prefix-line">
+          ↕A
+        </span>
+        <input
+          matInput
+          type="number"
+          step="0.1"
+          min="0"
+          formControlName="lineHeight"
+          aria-label="Line height"
+          (blur)="normalizeTypographyMeasure('lineHeight')"
+        />
+      </mat-form-field>
+    </div>
+
+    <span class="field-label">Alignment</span>
+    <mat-button-toggle-group
+      class="table-editor-toggle stretch-toggle"
+      formControlName="textAlign"
+      aria-label="Alignment"
+      hideSingleSelectionIndicator
+    >
+      <mat-button-toggle value="left"
+        ><mat-icon>format_align_left</mat-icon></mat-button-toggle
+      >
+      <mat-button-toggle value="center"
+        ><mat-icon>format_align_center</mat-icon></mat-button-toggle
+      >
+      <mat-button-toggle value="right"
+        ><mat-icon>format_align_right</mat-icon></mat-button-toggle
+      >
+      <mat-button-toggle value="justify"
+        ><mat-icon>format_align_justify</mat-icon></mat-button-toggle
+      >
+    </mat-button-toggle-group>
+
+    <mat-button-toggle-group
+      class="table-editor-toggle stretch-toggle"
+      formControlName="verticalAlign"
+      aria-label="Vertical alignment"
+      hideSingleSelectionIndicator
+    >
+      <mat-button-toggle value="top"
+        ><mat-icon>vertical_align_top</mat-icon></mat-button-toggle
+      >
+      <mat-button-toggle value="middle"
+        ><mat-icon>vertical_align_center</mat-icon></mat-button-toggle
+      >
+      <mat-button-toggle value="bottom"
+        ><mat-icon>vertical_align_bottom</mat-icon></mat-button-toggle
+      >
+    </mat-button-toggle-group>
+  </section>
+</div>

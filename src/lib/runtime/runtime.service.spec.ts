@@ -62,16 +62,21 @@ describe('RuntimeService', () => {
   });
 
   describe('openLinkDialog', () => {
-    it('should call api openLinkDialog if available', () => {
+    it('should call linkcallback when set via setlinkCallback', () => {
       const spy = vi.fn();
-      localRuntime.openLinkDialog = spy;
       runtime = new RuntimeService(localRuntime);
+      runtime.setlinkCallback(spy);
       runtime.openLinkDialog('http://example.com', 'popup');
-      expect(spy).toHaveBeenCalledWith('http://example.com', 'popup');
+      expect(spy).toHaveBeenCalledWith(
+        'http://example.com',
+        'popup',
+        undefined,
+        undefined,
+        undefined
+      );
     });
 
-    it('should not throw if api openLinkDialog is not available', () => {
-      localRuntime.openLinkDialog = undefined;
+    it('should not throw if no linkcallback is set', () => {
       runtime = new RuntimeService(localRuntime);
       expect(() => runtime.openLinkDialog('http://example.com', 'popup')).not.toThrow();
     });

@@ -1,0 +1,36 @@
+.help-steps {
+  color: var(--mat-sys-primary);
+  margin: 0 0 16px;
+  padding-left: 20px;
+  text-align: left;
+
+  li {
+    margin-bottom: 4px;
+
+    &::marker {
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+.help-section {
+  margin-bottom: 16px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  h4 {
+    color: var(--mat-sys-on-surface);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 4px;
+  }
+
+  p {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+  }
+}

@@ -1,0 +1,39 @@
+<form [formGroup]="form">
+  <mat-tab-group
+    mat-stretch-tabs="false"
+    [selectedIndex]="activeTabIndex()"
+    (selectedIndexChange)="setActiveTab($event)"
+  >
+    <mat-tab label="Borders">
+      <licit-table-editor-borders
+        [form]="form"
+        [activeEdges]="activeEdges"
+        [edgeStyles]="edgeStyles"
+        [selectionMode]="selectionMode"
+        [borderEdges]="borderEdges()"
+        [borderWidthOptions]="borderWidthOptions()"
+        [customBorderWidthValue]="customBorderWidthValue"
+        [selectedBorderWidthValue]="selectedBorderWidthValue"
+        [defaultBorder]="editorDefaults.border"
+      />
+    </mat-tab>
+    <mat-tab label="Typography & Padding">
+      <licit-table-editor-typography
+        [form]="form"
+        [(paddingLocked)]="paddingLocked"
+        [layoutValue]="layoutValue"
+        [typographyValue]="typographyValue"
+        [fontOptions]="fontOptions()"
+        [fontSizeOptions]="fontSizeOptions()"
+      />
+    </mat-tab>
+    <mat-tab label="Table Details">
+      <licit-table-editor-table-details
+        [form]="form"
+        [selectionMode]="selectionMode"
+        [tableValue]="tableValue"
+        [pageLimits]="pageLimits()"
+      />
+    </mat-tab>
+  </mat-tab-group>
+</form>
