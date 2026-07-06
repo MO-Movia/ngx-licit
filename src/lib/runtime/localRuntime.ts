@@ -8,12 +8,45 @@ import { SimpleRuntime } from '../models/editor-runtime';
 import { RecentColor } from '../models/recent-color';
 import type { Style } from '@modusoperandi/licit-tiptap/plugins/custom-styles';
 import type { ImageLike } from '@modusoperandi/licit-tiptap/plugins/multimedia';
+import type { LicitNode } from '../models/licit-document';
 
 const STYLES_KEY = 'STYLES_CACHE';
 const COLORS_KEY = 'COLORS_CACHE';
 
 @Injectable({ providedIn: 'root' })
 export class LocalRuntime implements SimpleRuntime {
+  private currentDocument: LicitNode = { type: 'doc' };
+
+  setDocument(document: LicitNode): void {
+    this.currentDocument = document;
+  }
+
+  getCompleteDoc(): LicitNode {
+    return this.currentDocument;
+  }
+
+  getInnerLinkSections(styles: string[]): Promise<LicitNode[]> {
+    const styleNames = new Set(styles);
+    const nodes: LicitNode[] = [];
+    this.walkDocument(this.currentDocument, (node) => {
+      if (
+        node.type === 'paragraph' &&
+        styleNames.has(node.attrs?.styleName ?? '')
+      ) {
+        nodes.push(node);
+      }
+    });
+    return Promise.resolve(nodes);
+  }
+
+  goToInnerLinkSection(sectionId: string): void {
+    const id = sectionId.startsWith('#') ? sectionId.slice(1) : sectionId;
+    document.getElementById(id)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+
   canEditStyles(): boolean {
     return true;
   }
@@ -107,5 +140,17 @@ export class LocalRuntime implements SimpleRuntime {
     }
 
     return [];
+  }
+
+  private walkDocument(
+    node: LicitNode | undefined,
+    visit: (node: LicitNode) => void
+  ): void {
+    if (!node) {
+      return;
+    }
+
+    visit(node);
+    node.content?.forEach((child) => this.walkDocument(child, visit));
   }
 }

@@ -59,7 +59,7 @@
     "@angular/router": "^21.2.16",
     "@modusoperandi/color-picker": "^1.0.7",
     "@modusoperandi/eslint-config": "^3.0.4",
-    "@modusoperandi/licit-tiptap": ">=0.0.1",
+    "@modusoperandi/licit-tiptap": "^0.0.1",
     "@modusoperandi/licit-import-utils": "^0.1.1",
     "@modusoperandi/mammoth": "^1.7.0-7",
     "@tiptap/core": "^3.0.0",
