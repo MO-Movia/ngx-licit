@@ -177,21 +177,11 @@
         subscriptSizing="dynamic"
       >
         <span matTextPrefix>Aa</span>
-        <input
-          matInput
-          inputmode="numeric"
-          pattern="\d{0,10000}"
-          formControlName="fontSize"
-          aria-label="Font size"
-          [matAutocomplete]="fontSizeAutocomplete"
-          (input)="setFontSize($any($event.target).value)"
-          (blur)="normalizeFontSize()"
-        />
-        <mat-autocomplete #fontSizeAutocomplete="matAutocomplete">
+        <mat-select formControlName="fontSize" aria-label="Font size">
           @for (size of fontSizeOptions(); track size) {
-            <mat-option [value]="size">{{ size }}</mat-option>
+            <mat-option [value]="size.toString()">{{ size }}</mat-option>
           }
-        </mat-autocomplete>
+        </mat-select>
       </mat-form-field>
 
       <div class="style-buttons">

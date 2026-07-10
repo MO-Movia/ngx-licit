@@ -185,6 +185,26 @@ describe('table-editor-domain', () => {
       expect(result.letterSpacing).toBe('1.5');
       expect(result.lineHeight).toBe('1.35');
     });
+
+    it('should fall back to the default line height for non-positive values', () => {
+      const typography: TypographyConfig = {
+        fontFamily: 'Arial',
+        fontSize: '14px',
+        textColor: '#000000',
+        backgroundColor: 'transparent',
+        bold: false,
+        italic: false,
+        underline: false,
+        letterSpacing: '0px',
+        lineHeight: 'normal',
+        textAlign: 'left',
+        verticalAlign: 'top',
+      };
+
+      const result = normalizeTypographyForForm(typography);
+
+      expect(result.lineHeight).toBe(DEFAULT_TYPOGRAPHY.lineHeight);
+    });
   });
 
   describe('normalizeTypographyForResult', () => {
@@ -208,6 +228,26 @@ describe('table-editor-domain', () => {
       expect(result.fontSize).toBe('14px');
       expect(result.letterSpacing).toBe('2px');
       expect(result.lineHeight).toBe('1.35');
+    });
+
+    it('should not emit zero line height', () => {
+      const typography: TypographyConfig = {
+        fontFamily: 'Arial',
+        fontSize: '14',
+        textColor: '#000000',
+        backgroundColor: 'transparent',
+        bold: false,
+        italic: false,
+        underline: false,
+        letterSpacing: '0',
+        lineHeight: '0',
+        textAlign: 'left',
+        verticalAlign: 'top',
+      };
+
+      const result = normalizeTypographyForResult(typography);
+
+      expect(result.lineHeight).toBe(DEFAULT_TYPOGRAPHY.lineHeight);
     });
   });
 

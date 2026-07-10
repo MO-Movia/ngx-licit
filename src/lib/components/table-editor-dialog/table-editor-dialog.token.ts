@@ -14,9 +14,17 @@ import { DEFAULT_TABLE_EDITOR_DEFAULTS } from './table-editor-dialog-defaults';
 /** Default font options used when callers do not provide custom dialog data. */
 export const DEFAULT_TABLE_EDITOR_FONT_OPTIONS: FontOption[] = [
   { label: 'Default Font', value: 'inherit' },
-  { label: 'Arial', value: 'Arial, sans-serif' },
-  { label: 'Times New Roman', value: "'Times New Roman', serif" },
-  { label: 'Courier New', value: "'Courier New', monospace" },
+  { label: 'Aclonica', value: 'Aclonica' },
+  { label: 'Acme', value: 'Acme' },
+  { label: 'Alegreya', value: 'Alegreya' },
+  { label: 'Arial', value: 'Arial' },
+  { label: 'Arial Black', value: 'Arial Black' },
+  { label: 'Georgia', value: 'Georgia' },
+  { label: 'Tahoma', value: 'Tahoma' },
+  { label: 'Times New Roman', value: 'Times New Roman' },
+  { label: 'Times', value: 'Times' },
+  { label: 'Verdana', value: 'Verdana' },
+  { label: 'Courier New', value: 'Courier New' },
 ];
 
 /**

@@ -5,3 +5,4 @@
 
 export * from './color-picker';
 export * from './link-tool';
+export * from './table-editor-dialog';

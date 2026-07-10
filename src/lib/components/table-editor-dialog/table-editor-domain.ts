@@ -32,6 +32,7 @@ import {
   normalizeDimensionInput,
   normalizeMeasureInput,
   normalizePaddingInput,
+  normalizePositiveMeasureInput,
   normalizePx,
   parseNumber,
 } from './table-editor-normalizers';
@@ -122,7 +123,10 @@ export function normalizeTypographyForForm(
     ...typography,
     fontSize: normalizePaddingInput(typography.fontSize),
     letterSpacing: normalizeMeasureInput(typography.letterSpacing),
-    lineHeight: normalizeMeasureInput(typography.lineHeight),
+    lineHeight: normalizePositiveMeasureInput(
+      typography.lineHeight,
+      DEFAULT_TYPOGRAPHY.lineHeight
+    ),
   };
 }
 
@@ -134,7 +138,10 @@ export function normalizeTypographyForResult(
     ...typography,
     fontSize: normalizePx(typography.fontSize),
     letterSpacing: normalizePx(typography.letterSpacing),
-    lineHeight: normalizeMeasureInput(typography.lineHeight),
+    lineHeight: normalizePositiveMeasureInput(
+      typography.lineHeight,
+      DEFAULT_TYPOGRAPHY.lineHeight
+    ),
   };
 }
 

@@ -1,0 +1,269 @@
+:root {
+  --knite-bg-dark: #121820;
+  --knite-bg-panel: #1a202c;
+  --knite-bg-field: #0f1722;
+  --knite-border: #333c4a;
+  --knite-accent: #f5a623;
+  --knite-text: #f0f0f0;
+  --knite-muted: #aaaaaa;
+  --knite-selection: rgba(74, 144, 226, 0.4);
+
+  --mat-sys-background: var(--knite-bg-dark);
+  --mat-sys-error: #ffb4ab;
+  --mat-sys-error-container: #93000a;
+  --mat-sys-inverse-on-surface: #1a202c;
+  --mat-sys-inverse-primary: #7b4f00;
+  --mat-sys-inverse-surface: #f0f0f0;
+  --mat-sys-on-background: var(--knite-text);
+  --mat-sys-on-error: #690005;
+  --mat-sys-on-error-container: #ffdad6;
+  --mat-sys-on-primary: #111;
+  --mat-sys-on-primary-container: #ffe0a6;
+  --mat-sys-on-secondary: #241a0b;
+  --mat-sys-on-secondary-container: #f4dfc1;
+  --mat-sys-on-surface: var(--knite-text);
+  --mat-sys-on-surface-variant: var(--knite-muted);
+  --mat-sys-on-tertiary: #17202a;
+  --mat-sys-on-tertiary-container: #d7e3ff;
+  --mat-sys-outline: var(--knite-muted);
+  --mat-sys-outline-variant: var(--knite-border);
+  --mat-sys-primary: var(--knite-accent);
+  --mat-sys-primary-container: #4c3300;
+  --mat-sys-scrim: #000;
+  --mat-sys-secondary: #d7c3a5;
+  --mat-sys-secondary-container: #3d2e18;
+  --mat-sys-shadow: #000;
+  --mat-sys-surface: var(--knite-bg-panel);
+  --mat-sys-surface-bright: #2d3748;
+  --mat-sys-surface-container: #1f2632;
+  --mat-sys-surface-container-high: #2d3748;
+  --mat-sys-surface-container-highest: #333c4a;
+  --mat-sys-surface-container-low: #171e28;
+  --mat-sys-surface-container-lowest: #0f1722;
+  --mat-sys-surface-dim: #0d1117;
+  --mat-sys-surface-tint: var(--knite-accent);
+  --mat-sys-surface-variant: #202936;
+  --mat-sys-tertiary: #aac7ff;
+  --mat-sys-tertiary-container: #284777;
+}
+
+html,
+body {
+  background: #0d1117;
+  color: var(--knite-text);
+  color-scheme: dark;
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+}
+
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-color: var(--knite-bg-panel);
+  --mdc-dialog-supporting-text-color: var(--knite-text);
+  --mat-dialog-actions-padding: 12px 24px 16px;
+  --mat-dialog-container-elevation-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  --mat-dialog-subhead-color: var(--knite-text);
+  --mat-dialog-with-actions-content-padding: 20px 24px 24px;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border: 1px solid var(--knite-accent);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mat-mdc-dialog-container .dialog-header,
+.mat-mdc-dialog-container .mat-mdc-dialog-actions,
+.mat-mdc-dialog-container .mat-mdc-dialog-content,
+.mat-mdc-dialog-container .mat-mdc-tab-body-wrapper,
+.mat-mdc-dialog-container .mat-mdc-tab-body-content,
+.mat-mdc-dialog-container licit-table-editor,
+.mat-mdc-dialog-container .tab-content {
+  background: var(--knite-bg-panel);
+  color: var(--knite-text);
+}
+
+.mat-mdc-dialog-container .dialog-header {
+  border-bottom: 1px solid var(--knite-border);
+}
+
+.mat-mdc-dialog-container .mat-mdc-dialog-actions {
+  border-top: 1px solid var(--knite-border);
+}
+
+.mat-mdc-tab-group {
+  --mat-tab-header-active-label-text-color: var(--knite-accent);
+  --mat-tab-header-active-ripple-color: var(--knite-accent);
+  --mat-tab-header-active-focus-label-text-color: var(--knite-accent);
+  --mat-tab-header-active-hover-label-text-color: var(--knite-accent);
+  --mat-tab-header-active-focus-indicator-color: var(--knite-accent);
+  --mat-tab-header-active-hover-indicator-color: var(--knite-accent);
+  --mat-tab-header-active-indicator-color: var(--knite-accent);
+  --mat-tab-header-inactive-label-text-color: var(--knite-muted);
+}
+
+.mat-mdc-tab-header {
+  background: var(--knite-bg-dark);
+  border-bottom: 1px solid var(--knite-border);
+}
+
+.mat-mdc-tab .mdc-tab__text-label {
+  color: var(--knite-muted) !important;
+}
+
+.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: var(--knite-accent) !important;
+}
+
+.mat-mdc-tab .mdc-tab-indicator__content--underline {
+  border-color: var(--knite-accent) !important;
+}
+
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-caret-color: var(--knite-accent);
+  --mdc-outlined-text-field-container-shape: 4px;
+  --mdc-outlined-text-field-disabled-outline-color: var(--knite-border);
+  --mdc-outlined-text-field-error-focus-outline-color: var(--mat-sys-error);
+  --mdc-outlined-text-field-error-hover-outline-color: var(--mat-sys-error);
+  --mdc-outlined-text-field-error-outline-color: var(--mat-sys-error);
+  --mdc-outlined-text-field-focus-label-text-color: var(--knite-accent);
+  --mdc-outlined-text-field-focus-outline-color: var(--knite-accent);
+  --mdc-outlined-text-field-hover-outline-color: var(--knite-accent);
+  --mdc-outlined-text-field-input-text-color: var(--knite-text);
+  --mdc-outlined-text-field-label-text-color: var(--knite-muted);
+  --mdc-outlined-text-field-outline-color: var(--knite-border);
+}
+
+.mat-mdc-form-field .mdc-text-field--outlined {
+  background: var(--knite-bg-field);
+  border-radius: 4px;
+}
+
+.mat-mdc-form-field,
+.mat-mdc-form-field input,
+.mat-mdc-select-value,
+.mat-mdc-select-arrow,
+.mat-mdc-select-placeholder,
+.mat-mdc-text-field-wrapper .mdc-floating-label,
+.mat-mdc-form-field .mat-mdc-floating-label {
+  color: var(--knite-text) !important;
+}
+
+.mat-mdc-text-field-wrapper .mat-mdc-form-field-text-prefix,
+.mat-mdc-text-field-wrapper .mat-mdc-form-field-text-suffix {
+  color: var(--knite-muted);
+}
+
+.cdk-overlay-container .mat-mdc-select-panel,
+.cdk-overlay-container .mat-mdc-autocomplete-panel,
+.cdk-overlay-container .mat-mdc-menu-panel {
+  background: var(--knite-bg-panel) !important;
+  border: 1px solid var(--knite-border);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+}
+
+.cdk-overlay-container .mat-mdc-option {
+  --mat-option-label-text-color: var(--knite-text);
+  --mat-option-selected-state-label-text-color: var(--knite-accent);
+
+  background: var(--knite-bg-panel) !important;
+  color: var(--knite-text) !important;
+}
+
+.cdk-overlay-container .mat-mdc-option .mdc-list-item__primary-text {
+  color: var(--knite-text) !important;
+}
+
+.cdk-overlay-container
+  .mat-mdc-option:hover:not(.mdc-list-item--disabled),
+.cdk-overlay-container
+  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled),
+.cdk-overlay-container
+  .mat-mdc-option.mdc-list-item--activated:not(.mdc-list-item--disabled) {
+  background: #2d3748 !important;
+}
+
+.cdk-overlay-container
+  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled)
+  .mdc-list-item__primary-text,
+.cdk-overlay-container
+  .mat-mdc-option.mdc-list-item--activated:not(.mdc-list-item--disabled)
+  .mdc-list-item__primary-text {
+  color: var(--knite-accent) !important;
+}
+
+.mat-mdc-button {
+  --mdc-text-button-label-text-color: var(--knite-text);
+}
+
+.mat-mdc-dialog-actions .mat-mdc-button:not(.primary) {
+  border: 1px solid var(--knite-border);
+  color: var(--knite-text);
+}
+
+.mat-mdc-dialog-actions .mat-mdc-button:not(.primary):hover {
+  background: #2d3748;
+}
+
+.mat-mdc-unelevated-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-flat-button {
+  --mdc-filled-button-container-color: var(--knite-accent);
+  --mdc-filled-button-label-text-color: #111;
+  --mdc-protected-button-container-color: var(--knite-accent);
+  --mdc-protected-button-label-text-color: #111;
+}
+
+.mat-mdc-dialog-actions .primary {
+  background: var(--knite-accent) !important;
+  color: #111 !important;
+}
+
+.mat-mdc-button .mdc-button__label,
+.mat-mdc-unelevated-button .mdc-button__label,
+.mat-mdc-raised-button .mdc-button__label,
+.mat-mdc-outlined-button .mdc-button__label,
+.mat-mdc-flat-button .mdc-button__label {
+  color: inherit;
+}
+
+.mat-mdc-icon-button {
+  --mdc-icon-button-icon-color: var(--knite-muted);
+  --mat-icon-button-state-layer-color: var(--knite-accent);
+}
+
+.mat-mdc-icon-button:hover {
+  --mdc-icon-button-icon-color: var(--knite-accent);
+}
+
+.color-input {
+  border: 1px solid var(--knite-border) !important;
+}
+
+.mat-mdc-dialog-container .map-cell {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.mat-mdc-dialog-container .map-line {
+  background: var(--knite-border);
+}
+
+.mat-mdc-dialog-container .preview-line {
+  background: #666;
+}
+
+.mat-mdc-dialog-container .field-label,
+.mat-mdc-dialog-container .label {
+  color: var(--knite-muted);
+}
+
+.mat-mdc-dialog-container .readout span {
+  color: var(--knite-accent);
+}
