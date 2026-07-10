@@ -138,6 +138,7 @@ export class TableEditorBordersComponent implements OnInit {
     this.form().controls.borders.controls.border.controls.width.setValue(
       `${width}px`
     );
+    this.form().controls.borders.controls.border.controls.width.markAsDirty();
   }
 
   public setCustomBorderWidth(value: string): void {
@@ -149,6 +150,7 @@ export class TableEditorBordersComponent implements OnInit {
       this.form().controls.borders.controls.border.controls.width.setValue(
         `${width}px`
       );
+      this.form().controls.borders.controls.border.controls.width.markAsDirty();
     }
   }
 
@@ -156,6 +158,7 @@ export class TableEditorBordersComponent implements OnInit {
     this.form().controls.borders.controls.border.controls.color.setValue(
       nativeColorValue(value)
     );
+    this.form().controls.borders.controls.border.controls.color.markAsDirty();
   }
 
   protected nativeColorValue(value: string | null | undefined): string {

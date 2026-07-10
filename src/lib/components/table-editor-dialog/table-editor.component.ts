@@ -17,6 +17,7 @@ import type {
   FontOption,
   LayoutConfig,
   TableDetails,
+  TableEditorChangedFields,
   TableEditorDialogData,
   TableEditorResult,
   TableEditorSnapshot,
@@ -32,7 +33,11 @@ import {
   TABLE_EDITOR_DEFAULTS,
   TABLE_EDITOR_FONT_OPTIONS,
 } from './table-editor-dialog.token';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -254,7 +259,55 @@ export class TableEditorComponent implements OnInit {
       layout: this.getLayoutValue(),
       metadata: this.getMetadataValue(),
       selectionMode: this.selectionMode(),
+      changed: this.getChangedFields(),
     };
+  }
+
+  private getChangedFields(): TableEditorChangedFields {
+    return {
+      table: this.getDirtyControlMap(this.form.controls.table.controls),
+      borders: {
+        targetEdges: !this.arraysEqual(
+          this.activeEdges(),
+          this.initialSnapshot.activeEdges
+        ),
+        edgeStyles: !this.sameJson(
+          this.edgeStyles(),
+          this.initialSnapshot.edgeStyles
+        ),
+        applyMode: this.form.controls.borders.controls.applyMode.dirty,
+        border: this.getDirtyControlMap(
+          this.form.controls.borders.controls.border.controls
+        ),
+      },
+      typography: this.getDirtyControlMap(
+        this.form.controls.typography.controls
+      ),
+      layout: this.getDirtyControlMap(this.form.controls.layout.controls),
+    };
+  }
+
+  private getDirtyControlMap<TControls extends Record<string, AbstractControl>>(
+    controls: TControls
+  ): Partial<Record<keyof TControls, boolean>> {
+    return Object.entries(controls).reduce(
+      (result, [key, control]) => ({
+        ...result,
+        ...(control.dirty ? {[key]: true} : {}),
+      }),
+      {} as Partial<Record<keyof TControls, boolean>>
+    );
+  }
+
+  private arraysEqual(first: readonly unknown[], second: readonly unknown[]): boolean {
+    return (
+      first.length === second.length &&
+      first.every((value, index) => value === second[index])
+    );
+  }
+
+  private sameJson(first: unknown, second: unknown): boolean {
+    return JSON.stringify(first) === JSON.stringify(second);
   }
 
   private refreshFormValueSignals(): void {

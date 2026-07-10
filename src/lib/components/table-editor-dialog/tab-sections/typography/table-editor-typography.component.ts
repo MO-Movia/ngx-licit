@@ -22,9 +22,9 @@ import type { TableEditorForm } from '../../table-editor-form';
 import { verticalAlignToFlex } from '../../table-editor-domain';
 import {
   nativeColorValue,
-  normalizeMeasureInput,
+  normalizeOptionalMeasureInput,
+  normalizeOptionalPositiveMeasureInput,
   normalizePaddingInput,
-  normalizePositiveMeasureInput,
 } from '../../table-editor-normalizers';
 import { DEFAULT_TYPOGRAPHY } from '../../table-editor-dialog-defaults';
 
@@ -131,12 +131,14 @@ export class TableEditorTypographyComponent {
     this.form().controls.typography.controls[control].setValue(
       nativeColorValue(value)
     );
+    this.form().controls.typography.controls[control].markAsDirty();
   }
 
   public clearBackground(): void {
     this.form().controls.typography.controls.backgroundColor.setValue(
       'transparent'
     );
+    this.form().controls.typography.controls.backgroundColor.markAsDirty();
   }
 
   public syncPadding(changedControl: keyof LayoutConfig): void {
@@ -154,12 +156,17 @@ export class TableEditorTypographyComponent {
       },
       { emitEvent: true }
     );
+    this.form().controls.layout.controls.paddingTop.markAsDirty();
+    this.form().controls.layout.controls.paddingRight.markAsDirty();
+    this.form().controls.layout.controls.paddingBottom.markAsDirty();
+    this.form().controls.layout.controls.paddingLeft.markAsDirty();
   }
 
   public togglePaddingLock(): void {
     const locked = !this.paddingLocked();
     this.paddingLocked.set(locked);
     this.form().controls.layout.controls.paddingLocked.setValue(locked);
+    this.form().controls.layout.controls.paddingLocked.markAsDirty();
 
     if (locked) {
       this.syncPadding('paddingTop');
@@ -182,16 +189,17 @@ export class TableEditorTypographyComponent {
     const field = this.form().controls.typography.controls[control];
     field.setValue(
       control === 'lineHeight'
-        ? normalizePositiveMeasureInput(
+        ? normalizeOptionalPositiveMeasureInput(
             field.value,
             DEFAULT_TYPOGRAPHY.lineHeight
           )
-        : normalizeMeasureInput(field.value)
+        : normalizeOptionalMeasureInput(field.value)
     );
   }
 
   public toggleTypographyStyle(control: 'bold' | 'italic' | 'underline'): void {
     const field = this.form().controls.typography.controls[control];
     field.setValue(!field.value);
+    field.markAsDirty();
   }
 }

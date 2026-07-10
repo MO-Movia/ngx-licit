@@ -205,6 +205,28 @@ describe('table-editor-domain', () => {
 
       expect(result.lineHeight).toBe(DEFAULT_TYPOGRAPHY.lineHeight);
     });
+
+    it('should keep blank optional typography measurements blank', () => {
+      const typography: TypographyConfig = {
+        fontFamily: '',
+        fontSize: '',
+        textColor: '',
+        backgroundColor: '',
+        bold: false,
+        italic: false,
+        underline: false,
+        letterSpacing: '',
+        lineHeight: '',
+        textAlign: '',
+        verticalAlign: '',
+      };
+
+      const result = normalizeTypographyForForm(typography);
+
+      expect(result.fontSize).toBe('');
+      expect(result.letterSpacing).toBe('');
+      expect(result.lineHeight).toBe('');
+    });
   });
 
   describe('normalizeTypographyForResult', () => {
@@ -248,6 +270,28 @@ describe('table-editor-domain', () => {
       const result = normalizeTypographyForResult(typography);
 
       expect(result.lineHeight).toBe(DEFAULT_TYPOGRAPHY.lineHeight);
+    });
+
+    it('should not add units to blank optional typography measurements', () => {
+      const typography: TypographyConfig = {
+        fontFamily: '',
+        fontSize: '',
+        textColor: '',
+        backgroundColor: '',
+        bold: false,
+        italic: false,
+        underline: false,
+        letterSpacing: '',
+        lineHeight: '',
+        textAlign: '',
+        verticalAlign: '',
+      };
+
+      const result = normalizeTypographyForResult(typography);
+
+      expect(result.fontSize).toBe('');
+      expect(result.letterSpacing).toBe('');
+      expect(result.lineHeight).toBe('');
     });
   });
 
