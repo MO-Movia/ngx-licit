@@ -40,8 +40,8 @@ export class RuntimeService implements EditorRuntime {
     closeTableEditor?: () => void
   ) => void;
   private innerLinkSectioncallback?: (sectionId: string) => void;
-  private getinnerLinkSections?: (styles: string[]) => Promise<LicitNode[]>;
-  private getCompleteDoc?: () => LicitNode;
+  private readonly getinnerLinkSections?: (styles: string[]) => Promise<LicitNode[]>;
+  private readonly getCompleteDoc?: () => LicitNode;
   /**
    * Instances are constructed by angular.
    *
