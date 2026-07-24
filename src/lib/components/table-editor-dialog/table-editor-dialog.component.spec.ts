@@ -249,6 +249,7 @@ describe('TableEditorComponent', () => {
       editor.form.controls.borders.controls.border.controls.width.value
     ).toBe('5px');
     expect(nativeColorValue('#abc')).toBe('#aabbcc');
+    expect(nativeColorValue('rgb(255, 255, 255)')).toBe('#ffffff');
     expect(nativeColorValue('not-a-color', '#123456')).toBe('#123456');
 
     borders.setBorderColor('#ABCDEF');
@@ -301,16 +302,22 @@ describe('TableEditorComponent', () => {
     expect(editor.form.controls.layout.controls.paddingRight.value).toBe('7');
   });
 
-  it('should normalize typography controls and preview styles', () => {
+  it('should update typography controls and preview styles', () => {
     const editor = getHarness();
 
     const typography = createTypographyHarness();
 
-    typography.setFontSize('18px');
+    editor.form.controls.typography.controls.fontSize.setValue('18');
     editor.form.controls.typography.controls.letterSpacing.setValue('1.5px');
     editor.form.controls.typography.controls.lineHeight.setValue('1.35');
     editor.form.controls.typography.controls.backgroundColor.setValue(
       '#222222'
+    );
+    editor.form.controls.typography.controls.textColor.setValue(
+      'rgb(0, 0, 0)'
+    );
+    editor.form.controls.typography.controls.backgroundColor.setValue(
+      'rgb(255, 255, 255)'
     );
     editor.form.controls.typography.controls.verticalAlign.setValue('bottom');
     typography.toggleTypographyStyle('bold');
@@ -318,13 +325,22 @@ describe('TableEditorComponent', () => {
     typography.toggleTypographyStyle('underline');
     typography.normalizeTypographyMeasure('letterSpacing');
     typography.normalizeTypographyMeasure('lineHeight');
-    typography.normalizeFontSize();
 
     expect(editor.form.controls.typography.controls.fontSize.value).toBe('18');
     expect(editor.form.controls.typography.controls.letterSpacing.value).toBe(
       '1.5'
     );
     expect(typography.previewInnerStyle()['align-items']).toBe('flex-end');
+    expect(typography.previewInnerStyle()['background-color']).toBe(
+      'rgb(255, 255, 255)'
+    );
+    expect(typography.previewTextStyle().color).toBe('rgb(0, 0, 0)');
+    editor.form.controls.typography.controls.backgroundColor.setValue(
+      'transparent'
+    );
+    expect(typography.previewTextStyle().color).toBe(
+      'var(--mat-sys-primary, #f5a623)'
+    );
     expect(typography.previewTextStyle()['font-weight']).toBe('700');
     expect(typography.previewTextStyle()['font-style']).toBe('italic');
     expect(typography.previewTextStyle()['text-decoration']).toBe('underline');
@@ -532,7 +548,7 @@ describe('TableEditorDialogComponent with injected defaults', () => {
     expect(injectedComponent.borderEdges().length).toBe(6);
     expect(injectedComponent.borderWidthOptions()).toEqual([1, 2, 3]);
     expect(injectedComponent.fontSizeOptions()).toEqual([
-      6, 8, 10, 12, 14, 16, 18, 24, 36,
+      6, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 30, 36, 42, 48, 60, 72, 90,
     ]);
     expect(injectedComponent.paddingLocked()).toBe(false);
     expect(injectedComponent.pageLimits().portrait).toEqual({

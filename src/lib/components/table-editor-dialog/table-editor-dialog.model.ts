@@ -80,8 +80,8 @@ export interface TypographyConfig {
   backgroundColor: string;
   letterSpacing: string;
   lineHeight: string;
-  textAlign: 'left' | 'center' | 'right' | 'justify';
-  verticalAlign: 'top' | 'middle' | 'bottom';
+  textAlign: '' | 'left' | 'center' | 'right' | 'justify';
+  verticalAlign: '' | 'top' | 'middle' | 'bottom';
 }
 
 /** Cell padding state for selected table cells. */
@@ -155,6 +155,19 @@ export interface TableEditorDialogData {
   pageLimits?: TablePageLimitsInput;
 }
 
+/** Dirty controls included with Apply so callers only write intentional changes. */
+export interface TableEditorChangedFields {
+  table?: Partial<Record<keyof TableDetails, boolean>>;
+  borders?: {
+    targetEdges?: boolean;
+    border?: Partial<Record<keyof BorderStyle, boolean>>;
+    applyMode?: boolean;
+    edgeStyles?: boolean;
+  };
+  typography?: Partial<Record<keyof TypographyConfig, boolean>>;
+  layout?: Partial<Record<keyof LayoutConfig, boolean>>;
+}
+
 /** Fully normalized state returned when the user applies changes. */
 export interface TableEditorResult {
   table: TableDetails;
@@ -163,6 +176,7 @@ export interface TableEditorResult {
   layout: LayoutConfig;
   metadata: TableMetadata;
   selectionMode: SelectionMode;
+  changed?: TableEditorChangedFields;
 }
 
 /** Form and signal state captured for Reset Settings. */

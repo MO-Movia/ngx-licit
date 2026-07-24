@@ -23,6 +23,10 @@ import type {
   LinkToolCategory,
   LinkToolItem,
 } from '../components/link-tool';
+import type {
+  TableEditorDialogData,
+  TableEditorResult,
+} from '../components/table-editor-dialog';
 import type { LicitNode } from './licit-document';
 
 export interface EditorRuntime
@@ -45,6 +49,18 @@ export interface EditorRuntime
     applyLink?: (href?: string, linkDisplayText?: string) => void,
     closeLinkTool?: () => void,
     linkItems?: Record<LinkToolCategory, LinkToolItem[]>
+  ) => void;
+  setTableEditorCallback?: (
+    callback: (
+      data: TableEditorDialogData,
+      applyTableEditorResult?: (result: TableEditorResult) => void,
+      closeTableEditor?: () => void
+    ) => void
+  ) => void;
+  openTableEditorDialog?: (
+    data: TableEditorDialogData,
+    applyTableEditorResult?: (result: TableEditorResult) => void,
+    closeTableEditor?: () => void
   ) => void;
 }
 

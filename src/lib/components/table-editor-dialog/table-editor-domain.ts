@@ -30,7 +30,10 @@ import type {
 import {
   normalizeCountInput,
   normalizeDimensionInput,
-  normalizeMeasureInput,
+  normalizeOptionalMeasureInput,
+  normalizeOptionalPaddingInput,
+  normalizeOptionalPositiveMeasureInput,
+  normalizeOptionalPx,
   normalizePaddingInput,
   normalizePx,
   parseNumber,
@@ -120,9 +123,12 @@ export function normalizeTypographyForForm(
 ): TypographyConfig {
   return {
     ...typography,
-    fontSize: normalizePaddingInput(typography.fontSize),
-    letterSpacing: normalizeMeasureInput(typography.letterSpacing),
-    lineHeight: normalizeMeasureInput(typography.lineHeight),
+    fontSize: normalizeOptionalPaddingInput(typography.fontSize),
+    letterSpacing: normalizeOptionalMeasureInput(typography.letterSpacing),
+    lineHeight: normalizeOptionalPositiveMeasureInput(
+      typography.lineHeight,
+      DEFAULT_TYPOGRAPHY.lineHeight
+    ),
   };
 }
 
@@ -132,9 +138,12 @@ export function normalizeTypographyForResult(
 ): TypographyConfig {
   return {
     ...typography,
-    fontSize: normalizePx(typography.fontSize),
-    letterSpacing: normalizePx(typography.letterSpacing),
-    lineHeight: normalizeMeasureInput(typography.lineHeight),
+    fontSize: normalizeOptionalPx(typography.fontSize),
+    letterSpacing: normalizeOptionalPx(typography.letterSpacing),
+    lineHeight: normalizeOptionalPositiveMeasureInput(
+      typography.lineHeight,
+      DEFAULT_TYPOGRAPHY.lineHeight
+    ),
   };
 }
 
@@ -239,6 +248,7 @@ export function verticalAlignToFlex(
   value: TypographyConfig['verticalAlign']
 ): string {
   return {
+    '': '',
     top: 'flex-start',
     middle: 'center',
     bottom: 'flex-end',

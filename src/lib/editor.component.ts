@@ -42,7 +42,13 @@ import {
   LinkToolSaveEvent,
   MoLinkToolComponent,
 } from './components/link-tool';
+import {
+  TableEditorDialogComponent,
+  TableEditorDialogData,
+  TableEditorResult,
+} from './components/table-editor-dialog';
 import { DynamicDialogService } from './dynamic-ui';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 /**
  * Default behavior is to fill area
@@ -231,8 +237,13 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
   private closeLinkToolCallback?: () => void;
   private linkToolRef?: ComponentRef<MoLinkToolComponent>;
   private linkToolSubscriptions: OutputRefSubscription[] = [];
+  private tableEditorDialogRef?: MatDialogRef<
+    TableEditorDialogComponent,
+    TableEditorResult | undefined
+  >;
   private readonly ngZone = inject(NgZone);
   private readonly dialogService = inject(DynamicDialogService);
+  private readonly materialDialog = inject(MatDialog);
   readonly runtime = input<EditorRuntime>();
   private readonly el = inject(ElementRef);
 
@@ -254,6 +265,17 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
               applyLink,
               closeLinkTool,
               linkItems
+            );
+          });
+        }
+      );
+      runtime?.setTableEditorCallback?.(
+        (data, applyTableEditorResult, closeTableEditor) => {
+          this.ngZone.run(() => {
+            this.openTableEditorDialog(
+              data,
+              applyTableEditorResult,
+              closeTableEditor
             );
           });
         }
@@ -354,11 +376,40 @@ export class LicitEditorComponent implements AfterViewInit, OnDestroy {
     const { doc, selection } = editorView.state;
     return doc.textBetween(selection.from, selection.to, ' ');
   }
+
+  private openTableEditorDialog(
+    data: TableEditorDialogData,
+    applyTableEditorResult?: (result: TableEditorResult) => void,
+    closeTableEditor?: () => void
+  ): void {
+    this.tableEditorDialogRef?.close();
+    this.tableEditorDialogRef = this.materialDialog.open(
+      TableEditorDialogComponent,
+      {
+        data,
+        width: '900px',
+        maxWidth: 'calc(100vw - 32px)',
+        autoFocus: false,
+        restoreFocus: false,
+      }
+    );
+    this.tableEditorDialogRef.afterClosed().subscribe((result) => {
+      this.tableEditorDialogRef = undefined;
+      if (result) {
+        applyTableEditorResult?.(result);
+      } else {
+        closeTableEditor?.();
+      }
+      this.licit?.editorView?.focus();
+    });
+  }
+
   /**
    * Called by angular to clean up component.
    */
   ngOnDestroy() {
     this.dialogService.close();
+    this.tableEditorDialogRef?.close();
     // Clean up the react stuff
     this.root?.unmount();
   }

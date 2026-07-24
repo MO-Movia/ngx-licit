@@ -16,6 +16,10 @@ import type {
   LinkToolCategory,
   LinkToolItem,
 } from '../components/link-tool';
+import type {
+  TableEditorDialogData,
+  TableEditorResult,
+} from '../components/table-editor-dialog';
 
 /**
  * Provides support methods to Licit editor
@@ -30,9 +34,14 @@ export class RuntimeService implements EditorRuntime {
     closeLinkTool?: () => void,
     linkItems?: Record<LinkToolCategory, LinkToolItem[]>
   ) => void;
+  private tableEditorCallback?: (
+    data: TableEditorDialogData,
+    applyTableEditorResult?: (result: TableEditorResult) => void,
+    closeTableEditor?: () => void
+  ) => void;
   private innerLinkSectioncallback?: (sectionId: string) => void;
-  private getinnerLinkSections?: (styles: string[]) => Promise<LicitNode[]>;
-  private getCompleteDoc?: () => LicitNode;
+  private readonly getinnerLinkSections?: (styles: string[]) => Promise<LicitNode[]>;
+  private readonly getCompleteDoc?: () => LicitNode;
   /**
    * Instances are constructed by angular.
    *
@@ -57,6 +66,7 @@ export class RuntimeService implements EditorRuntime {
     this.saveRecentColor = this.saveRecentColor.bind(this);
     this.deleteRecentColorById = this.deleteRecentColorById.bind(this);
     this.openLinkDialog = this.openLinkDialog.bind(this);
+    this.openTableEditorDialog = this.openTableEditorDialog.bind(this);
     this.goToInnerLinkSection = this.goToInnerLinkSection.bind(this);
     this.fetchInnerLinkSelectionIds =
       this.fetchInnerLinkSelectionIds.bind(this);
@@ -85,6 +95,28 @@ export class RuntimeService implements EditorRuntime {
     if (this.linkcallback) {
       this.linkcallback(link, popupString, applyLink, closeLinkTool, linkItems);
     }
+  }
+
+  setTableEditorCallback(
+    callback: (
+      data: TableEditorDialogData,
+      applyTableEditorResult?: (result: TableEditorResult) => void,
+      closeTableEditor?: () => void
+    ) => void
+  ): void {
+    this.tableEditorCallback = callback;
+  }
+
+  openTableEditorDialog(
+    data: TableEditorDialogData,
+    applyTableEditorResult?: (result: TableEditorResult) => void,
+    closeTableEditor?: () => void
+  ): void {
+    this.tableEditorCallback?.(
+      data,
+      applyTableEditorResult,
+      closeTableEditor
+    );
   }
 
   setInnerLinkSection(innerLinkcallback: (sectionId: string) => void): void {

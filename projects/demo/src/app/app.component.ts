@@ -7,6 +7,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   model,
   signal,
 } from '@angular/core';
@@ -76,7 +77,11 @@ export class AppComponent {
   constructor(
     private readonly localRuntime: LocalRuntime,
     private readonly importer: DocumentImporterService
-  ) {}
+  ) {
+    effect(() => {
+      this.localRuntime.setDocument(this.doc());
+    });
+  }
   protected runtime = new RuntimeService(this.localRuntime);
   dummyFloatRuntime = {
     isReadonly: false,
@@ -221,5 +226,9 @@ export class AppComponent {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  protected onEditorChange(data: LicitDocument): void {
+    this.localRuntime.setDocument(data);
   }
 }

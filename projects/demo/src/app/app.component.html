@@ -57,6 +57,7 @@
     [plugins]="getPlugins()"
     [docType]="'demo'"
     [runtime]="runtime"
+    (editorChange)="onEditorChange($event.data)"
   >
   </licit-editor>
 </div>

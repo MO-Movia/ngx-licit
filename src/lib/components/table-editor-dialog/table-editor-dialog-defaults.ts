@@ -28,7 +28,7 @@ export const DEFAULT_TYPOGRAPHY: TypographyConfig = {
   bold: false,
   italic: false,
   underline: false,
-  textColor: '#dddddd',
+  textColor: '#000000',
   backgroundColor: 'transparent',
   letterSpacing: '0px',
   lineHeight: '1.15',
@@ -67,7 +67,9 @@ export const DEFAULT_PAGE_LIMITS: TablePageLimits = {
 };
 
 /** Default font-size options shown in the Typography tab. */
-export const DEFAULT_FONT_SIZE_OPTIONS = [6, 8, 10, 12, 14, 16, 18, 24, 36];
+export const DEFAULT_FONT_SIZE_OPTIONS = [
+  6, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 30, 36, 42, 48, 60, 72, 90,
+];
 
 /** Default border-width options shown in the Borders tab. */
 export const DEFAULT_BORDER_WIDTH_OPTIONS = [1, 2, 3];

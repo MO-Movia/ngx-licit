@@ -10,7 +10,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -23,9 +22,11 @@ import type { TableEditorForm } from '../../table-editor-form';
 import { verticalAlignToFlex } from '../../table-editor-domain';
 import {
   nativeColorValue,
-  normalizeMeasureInput,
+  normalizeOptionalMeasureInput,
+  normalizeOptionalPositiveMeasureInput,
   normalizePaddingInput,
 } from '../../table-editor-normalizers';
+import { DEFAULT_TYPOGRAPHY } from '../../table-editor-dialog-defaults';
 
 /**
  * Table editor typography and padding controls.
@@ -41,7 +42,6 @@ import {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatAutocompleteModule,
     MatButtonToggleModule,
     MatTooltipModule,
   ],
@@ -71,7 +71,7 @@ export class TableEditorTypographyComponent {
       'background-color':
         typography.backgroundColor === 'transparent'
           ? 'transparent'
-          : nativeColorValue(typography.backgroundColor),
+          : this.cssColorValue(typography.backgroundColor, 'transparent'),
       'align-items': verticalAlignToFlex(typography.verticalAlign),
     };
   });
@@ -80,7 +80,10 @@ export class TableEditorTypographyComponent {
     const typography = this.typographyValue()();
 
     return {
-      color: nativeColorValue(typography.textColor),
+      color: this.previewTextColorValue(
+        typography.textColor,
+        typography.backgroundColor
+      ),
       'font-family': typography.fontFamily,
       'font-size': typography.fontSize,
       'font-style': typography.italic ? 'italic' : 'normal',
@@ -96,6 +99,31 @@ export class TableEditorTypographyComponent {
     return nativeColorValue(value);
   }
 
+  private cssColorValue(
+    value: string | null | undefined,
+    fallback: string
+  ): string {
+    const color = String(value ?? '').trim();
+    return color || fallback;
+  }
+
+  private previewTextColorValue(
+    textColor: string | null | undefined,
+    backgroundColor: string | null | undefined
+  ): string {
+    const normalizedTextColor = nativeColorValue(textColor);
+    const fill = String(backgroundColor ?? '').trim().toLowerCase();
+
+    if (
+      normalizedTextColor === '#000000' &&
+      (!fill || fill === 'transparent' || fill === 'rgba(0, 0, 0, 0)')
+    ) {
+      return 'var(--mat-sys-primary, #f5a623)';
+    }
+
+    return this.cssColorValue(textColor, '#000000');
+  }
+
   public setColor(
     control: 'textColor' | 'backgroundColor',
     value: string
@@ -103,12 +131,14 @@ export class TableEditorTypographyComponent {
     this.form().controls.typography.controls[control].setValue(
       nativeColorValue(value)
     );
+    this.form().controls.typography.controls[control].markAsDirty();
   }
 
   public clearBackground(): void {
     this.form().controls.typography.controls.backgroundColor.setValue(
       'transparent'
     );
+    this.form().controls.typography.controls.backgroundColor.markAsDirty();
   }
 
   public syncPadding(changedControl: keyof LayoutConfig): void {
@@ -126,12 +156,17 @@ export class TableEditorTypographyComponent {
       },
       { emitEvent: true }
     );
+    this.form().controls.layout.controls.paddingTop.markAsDirty();
+    this.form().controls.layout.controls.paddingRight.markAsDirty();
+    this.form().controls.layout.controls.paddingBottom.markAsDirty();
+    this.form().controls.layout.controls.paddingLeft.markAsDirty();
   }
 
   public togglePaddingLock(): void {
     const locked = !this.paddingLocked();
     this.paddingLocked.set(locked);
     this.form().controls.layout.controls.paddingLocked.setValue(locked);
+    this.form().controls.layout.controls.paddingLocked.markAsDirty();
 
     if (locked) {
       this.syncPadding('paddingTop');
@@ -148,30 +183,23 @@ export class TableEditorTypographyComponent {
     this.syncPadding(control);
   }
 
-  public setFontSize(value: string): void {
-    const size = String(value ?? '').replaceAll(/\D/g, '');
-    if (size !== value) {
-      this.form().controls.typography.controls.fontSize.setValue(size);
-    }
-  }
-
-  public normalizeFontSize(): void {
-    this.form().controls.typography.controls.fontSize.setValue(
-      normalizePaddingInput(
-        this.form().controls.typography.controls.fontSize.value
-      )
-    );
-  }
-
   public normalizeTypographyMeasure(
     control: 'letterSpacing' | 'lineHeight'
   ): void {
     const field = this.form().controls.typography.controls[control];
-    field.setValue(normalizeMeasureInput(field.value));
+    field.setValue(
+      control === 'lineHeight'
+        ? normalizeOptionalPositiveMeasureInput(
+            field.value,
+            DEFAULT_TYPOGRAPHY.lineHeight
+          )
+        : normalizeOptionalMeasureInput(field.value)
+    );
   }
 
   public toggleTypographyStyle(control: 'bold' | 'italic' | 'underline'): void {
     const field = this.form().controls.typography.controls[control];
     field.setValue(!field.value);
+    field.markAsDirty();
   }
 }
