@@ -84,6 +84,11 @@ export interface TypographyConfig {
   verticalAlign: '' | 'top' | 'middle' | 'bottom';
 }
 
+/** Typography fields whose selected content does not share one effective value. */
+export type MixedTypographyFields = Partial<
+  Record<keyof TypographyConfig, boolean>
+>;
+
 /** Cell padding state for selected table cells. */
 export interface LayoutConfig {
   paddingTop: string;
@@ -153,6 +158,9 @@ export interface TableEditorDialogData {
   selectionMode?: SelectionMode;
   fontOptions?: FontOption[];
   pageLimits?: TablePageLimitsInput;
+  mixed?: {
+    typography?: MixedTypographyFields;
+  };
 }
 
 /** Dirty controls included with Apply so callers only write intentional changes. */

@@ -16,15 +16,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import type {
   FontOption,
   LayoutConfig,
+  MixedTypographyFields,
   TypographyConfig,
 } from '../../table-editor-dialog.model';
 import type { TableEditorForm } from '../../table-editor-form';
 import { verticalAlignToFlex } from '../../table-editor-domain';
 import {
   nativeColorValue,
-  normalizeOptionalMeasureInput,
-  normalizeOptionalPositiveMeasureInput,
+  normalizeOptionalLetterSpacingInput,
+  normalizeOptionalLineHeightInput,
   normalizePaddingInput,
+  parseNumber,
 } from '../../table-editor-normalizers';
 import { DEFAULT_TYPOGRAPHY } from '../../table-editor-dialog-defaults';
 
@@ -53,6 +55,31 @@ export class TableEditorTypographyComponent {
   public readonly typographyValue = input.required<Signal<TypographyConfig>>();
   public readonly fontOptions = input.required<FontOption[]>();
   public readonly fontSizeOptions = input.required<number[]>();
+  public readonly mixedTypography = input<MixedTypographyFields>();
+
+  public readonly effectiveFontSizeOptions = computed(() => {
+    const current = parseNumber(this.typographyValue()().fontSize);
+    const values = [...this.fontSizeOptions()];
+    if (Number.isFinite(current) && current > 0 && !values.includes(current)) {
+      values.push(current);
+    }
+    return values.sort((first, second) => first - second);
+  });
+
+  public readonly effectiveFontOptions = computed(() => {
+    const options = [...this.fontOptions()];
+    const current = this.typographyValue()().fontFamily.trim();
+    if (
+      current &&
+      current.toLowerCase() !== 'inherit' &&
+      !options.some(
+        (option) => option.value.toLowerCase() === current.toLowerCase()
+      )
+    ) {
+      options.push({label: current, value: current});
+    }
+    return options;
+  });
 
   public readonly paddingLockedValue = computed(() => this.paddingLocked());
 
@@ -189,11 +216,15 @@ export class TableEditorTypographyComponent {
     const field = this.form().controls.typography.controls[control];
     field.setValue(
       control === 'lineHeight'
-        ? normalizeOptionalPositiveMeasureInput(
+        ? normalizeOptionalLineHeightInput(
             field.value,
+            this.form().controls.typography.controls.fontSize.value,
             DEFAULT_TYPOGRAPHY.lineHeight
           )
-        : normalizeOptionalMeasureInput(field.value)
+        : normalizeOptionalLetterSpacingInput(
+            field.value,
+            this.form().controls.typography.controls.fontSize.value
+          )
     );
   }
 

@@ -30,11 +30,13 @@ import type {
 import {
   normalizeCountInput,
   normalizeDimensionInput,
-  normalizeOptionalMeasureInput,
-  normalizeOptionalPaddingInput,
-  normalizeOptionalPositiveMeasureInput,
-  normalizeOptionalPx,
+  normalizeOptionalLetterSpacingInput,
+  normalizeOptionalLetterSpacingPx,
+  normalizeOptionalFontSizeInput,
+  normalizeOptionalLineHeightInput,
+  normalizeOptionalPt,
   normalizePaddingInput,
+  normalizePaddingPx,
   normalizePx,
   parseNumber,
 } from './table-editor-normalizers';
@@ -110,10 +112,10 @@ export function normalizeLayoutForResult(
   return {
     ...layout,
     paddingLocked,
-    paddingTop: normalizePx(layout.paddingTop),
-    paddingRight: normalizePx(layout.paddingRight),
-    paddingBottom: normalizePx(layout.paddingBottom),
-    paddingLeft: normalizePx(layout.paddingLeft),
+    paddingTop: normalizePaddingPx(layout.paddingTop),
+    paddingRight: normalizePaddingPx(layout.paddingRight),
+    paddingBottom: normalizePaddingPx(layout.paddingBottom),
+    paddingLeft: normalizePaddingPx(layout.paddingLeft),
   };
 }
 
@@ -123,10 +125,14 @@ export function normalizeTypographyForForm(
 ): TypographyConfig {
   return {
     ...typography,
-    fontSize: normalizeOptionalPaddingInput(typography.fontSize),
-    letterSpacing: normalizeOptionalMeasureInput(typography.letterSpacing),
-    lineHeight: normalizeOptionalPositiveMeasureInput(
+    fontSize: normalizeOptionalFontSizeInput(typography.fontSize),
+    letterSpacing: normalizeOptionalLetterSpacingInput(
+      typography.letterSpacing,
+      typography.fontSize
+    ),
+    lineHeight: normalizeOptionalLineHeightInput(
       typography.lineHeight,
+      typography.fontSize,
       DEFAULT_TYPOGRAPHY.lineHeight
     ),
   };
@@ -138,10 +144,13 @@ export function normalizeTypographyForResult(
 ): TypographyConfig {
   return {
     ...typography,
-    fontSize: normalizeOptionalPx(typography.fontSize),
-    letterSpacing: normalizeOptionalPx(typography.letterSpacing),
-    lineHeight: normalizeOptionalPositiveMeasureInput(
+    fontSize: normalizeOptionalPt(typography.fontSize),
+    letterSpacing: normalizeOptionalLetterSpacingPx(
+      typography.letterSpacing
+    ),
+    lineHeight: normalizeOptionalLineHeightInput(
       typography.lineHeight,
+      typography.fontSize,
       DEFAULT_TYPOGRAPHY.lineHeight
     ),
   };
