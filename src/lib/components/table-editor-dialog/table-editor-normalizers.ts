@@ -49,11 +49,10 @@ export function normalizeOptionalFontSizeInput(
   }
 
   const absolutePixels = measure.unit ? absoluteMeasureInPx(measure) : null;
-  const pointSize = measure.unit
-    ? absolutePixels === null
-      ? null
-      : absolutePixels * (72 / 96)
-    : measure.value;
+  let pointSize: number | null = measure.value;
+  if (measure.unit) {
+    pointSize = absolutePixels === null ? null : absolutePixels * (72 / 96);
+  }
   return pointSize === null || !Number.isFinite(pointSize)
     ? ''
     : formatMeasure(pointSize);
@@ -111,7 +110,7 @@ type ParsedCssMeasure = {
 };
 
 function parseCssMeasure(value: NumericInputValue): ParsedCssMeasure | null {
-  const match = /^([+-]?(?:\d+\.?\d*|\.\d+))\s*([a-z%]*)$/i.exec(
+  const match = /^([+-]?(?:\d+\.\d*|\d+|\.\d+))\s*([a-z%]*)$/i.exec(
     String(value ?? '').trim()
   );
   if (!match) {
