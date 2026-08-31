@@ -1,6 +1,6 @@
 {
   "name": "@modusoperandi/ngx-licit",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -26,7 +26,7 @@
     "@angular/core": ">=21.0.0",
     "@angular/forms": ">=21.0.0",
     "@angular/material": ">=21.0.0",
-    "@modusoperandi/licit-tiptap": ">=0.0.1",
+    "@modusoperandi/licit-tiptap": ">=0.1.0",
     "@tiptap/core": "^3.20.0",
     "@tiptap/pm": "^3.20.0",
     "react": ">=18.0.0",
