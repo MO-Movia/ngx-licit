@@ -24,7 +24,7 @@ export const DEFAULT_BORDER: BorderStyle = {
 /** Default typography and color values used to seed the editor form. */
 export const DEFAULT_TYPOGRAPHY: TypographyConfig = {
   fontFamily: 'inherit',
-  fontSize: '14px',
+  fontSize: '14pt',
   bold: false,
   italic: false,
   underline: false,

@@ -346,6 +346,27 @@ describe('TableEditorComponent', () => {
     expect(typography.previewTextStyle()['text-decoration']).toBe('underline');
   });
 
+  it('should expose an imported decimal font size as a selectable value', () => {
+    const editor = getHarness();
+    const typography = createTypographyHarness();
+
+    editor.form.controls.typography.controls.fontSize.setValue('10.7');
+
+    expect(typography.effectiveFontSizeOptions()).toContain(10.7);
+  });
+
+  it('should expose an imported font family even when it is not predefined', () => {
+    const editor = getHarness();
+    const typography = createTypographyHarness();
+
+    editor.form.controls.typography.controls.fontFamily.setValue('Book Antiqua');
+
+    expect(typography.effectiveFontOptions()).toContainEqual({
+      label: 'Book Antiqua',
+      value: 'Book Antiqua',
+    });
+  });
+
   it('should calculate table details and overflow styles', () => {
     const editor = getHarness();
 
@@ -566,6 +587,6 @@ describe('TableEditorDialogComponent with injected defaults', () => {
     ).toBe('#123456');
     expect(
       injectedComponent.form.controls.typography.controls.fontSize.value
-    ).toBe('18');
+    ).toBe('13.5');
   });
 });

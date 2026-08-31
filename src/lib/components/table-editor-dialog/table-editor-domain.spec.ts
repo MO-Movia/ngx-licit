@@ -141,6 +141,26 @@ describe('table-editor-domain', () => {
       expect(result.paddingBottom).toBe('15');
       expect(result.paddingLeft).toBe('20');
     });
+
+    it('should convert absolute CSS padding units to equivalent pixels', () => {
+      const layout: LayoutConfig = {
+        paddingLocked: true,
+        paddingTop: '4pt',
+        paddingRight: '0.25in',
+        paddingBottom: '1pc',
+        paddingLeft: '5.3333px',
+      };
+
+      const result = normalizeLayoutForForm(layout);
+
+      expect(result.paddingTop).toBe('5.3333');
+      expect(result.paddingRight).toBe('24');
+      expect(result.paddingBottom).toBe('16');
+      expect(result.paddingLeft).toBe('5.3333');
+      expect(normalizeLayoutForResult(result, true).paddingTop).toBe(
+        '5.3333px'
+      );
+    });
   });
 
   describe('normalizeLayoutForResult', () => {
@@ -181,7 +201,7 @@ describe('table-editor-domain', () => {
 
       const result = normalizeTypographyForForm(typography);
 
-      expect(result.fontSize).toBe('14');
+      expect(result.fontSize).toBe('10.5');
       expect(result.letterSpacing).toBe('1.5');
       expect(result.lineHeight).toBe('1.35');
     });
@@ -204,6 +224,26 @@ describe('table-editor-domain', () => {
       const result = normalizeTypographyForForm(typography);
 
       expect(result.lineHeight).toBe(DEFAULT_TYPOGRAPHY.lineHeight);
+    });
+
+    it('should convert an absolute line height to a font-relative ratio', () => {
+      const typography: TypographyConfig = {
+        fontFamily: 'Times New Roman',
+        fontSize: '12pt',
+        textColor: '#000000',
+        backgroundColor: 'transparent',
+        bold: true,
+        italic: false,
+        underline: false,
+        letterSpacing: '0pt',
+        lineHeight: '14pt',
+        textAlign: 'center',
+        verticalAlign: 'middle',
+      };
+
+      const result = normalizeTypographyForForm(typography);
+      expect(result.letterSpacing).toBe('0');
+      expect(result.lineHeight).toBe('1.1667');
     });
 
     it('should keep blank optional typography measurements blank', () => {
@@ -230,10 +270,10 @@ describe('table-editor-domain', () => {
   });
 
   describe('normalizeTypographyForResult', () => {
-    it('should restore pixel units for typography values', () => {
+    it('should restore point units for font size without rounding decimals', () => {
       const typography: TypographyConfig = {
         fontFamily: 'Arial',
-        fontSize: '14',
+        fontSize: '10.7',
         textColor: '#000000',
         backgroundColor: 'transparent',
         bold: false,
@@ -247,8 +287,8 @@ describe('table-editor-domain', () => {
 
       const result = normalizeTypographyForResult(typography);
 
-      expect(result.fontSize).toBe('14px');
-      expect(result.letterSpacing).toBe('2px');
+      expect(result.fontSize).toBe('10.7pt');
+      expect(result.letterSpacing).toBe('1.5px');
       expect(result.lineHeight).toBe('1.35');
     });
 
